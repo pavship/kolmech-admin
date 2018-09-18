@@ -1,0 +1,221 @@
+mutation signup {
+  signup(
+    email: "",
+    password: "",
+  	fName: "",
+    lName: ""
+  ) {
+		token
+  }
+}
+mutation login {
+  login(email: "developer@example.com", password: "nooneknows") {
+		token  
+  }
+}
+query me {
+  me {
+    id
+    email
+    person {
+      fName
+      lName
+    }
+    events {
+      id
+      datetimeLocal
+    }
+  }
+}
+query enquiry {
+  enquiry (id: "cjlkvnw7300gb0912kwbna96f") {
+    id
+    num
+    dateLocal
+    org {
+      id
+      name
+      inn
+    }
+    events {
+      id
+      datetimeLocal
+      htmlText
+      type
+      user {
+        person {
+          fName
+          lName
+        }
+      }
+      status {
+          id
+          name
+      }
+    }
+  }
+  statuses {
+    id
+    stage
+    name
+  }
+}
+query enquiries {
+  enquiries {
+    id
+    num
+    dateLocal
+    org {
+      id
+      name
+      inn
+    }
+    events ( where: { status: { id_not: null } }, last: 1 ) {
+      id
+      datetimeLocal
+      status {
+        id
+        name
+      }
+      type
+    }
+  }
+}
+query allEnquiries {
+  enquiries {
+    id
+    num
+    dateLocal
+    org {
+      id
+      name
+      inn
+    }
+    events (where: {
+      status: {
+        id_not: null
+      }
+    }, last: 1) {
+      id
+      user {
+        person {
+          lName
+        }
+      }
+      status {
+        id
+        name
+        stage
+      }
+      type
+    }
+  }
+}
+mutation createEnquiryEvent {
+  createEnquiryEvent(
+    enquiryId: "cjltvfu2g001f0920w77nnx63"
+    # htmlText: "<p><strong>Создал</strong> тут</p>"
+    statusId: "cjlj2561q00130959gtcqhoew"
+    doc: {
+      dateLocal: "2017-07-01"
+      amount: 5460.15
+    }
+  ) {
+    id
+    datetimeLocal
+    type
+    doc {
+      id
+      dateLocal
+      amount
+      type
+    }
+  }
+}
+mutation createEnquiry {
+  createEnquiry (
+    dateLocal: "2017-07-01"
+    orgId: "cjlmf0igh000h0929jsiwf5jg",
+    modelId: "cjlmf0igh000h0929jsiwf5jg",
+    qty: 1
+  ){
+    id
+  }
+}
+mutation updateEnquiry {
+  updateEnquiry ( 
+    input: {
+      dateLocal: "2018-08-12"
+      id: "cjlivcszu002s0930g6cqzt55"
+      orgId: "cjliefthe001r09351n74zmfi"
+    }
+  ){
+    id
+    num
+    dateLocal
+    org {
+      id
+      name
+      inn
+    }
+    events {
+      id
+      user {
+        person {
+          lName
+        }
+      }
+    }
+  }
+}
+
+mutation deleteAllEnquiries {
+	deleteAllEnquiries {
+    count
+  }  
+}
+mutation createOrg {
+  createOrg(inn: "7706107510") {
+    id
+    inn
+    name
+    legalAddress
+  }
+}
+query orgs {
+  orgs {
+    id
+    inn
+    moedeloId
+    name
+    legalAddress
+  }
+}
+mutation deleteOrg {
+  deleteOrg( id: "cjlksr1ky00c209121teinfnv") {
+    id
+  }
+}
+mutation deleteAllOrgs {
+  deleteAllOrgs {
+    count
+  }
+}
+query statuses {
+  statuses {
+    id
+    stage
+    name
+    prev {
+      id
+    } 
+    next {
+      id
+    }
+  }
+}
+mutation importModels {
+    importModels {
+        count
+    }
+}
