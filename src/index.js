@@ -25,7 +25,7 @@ import App from './App'
 const client = new ApolloClient({
     // uri: 'http://localhost:4000',
     // uri: 'https://now-advanced.now.sh',
-    uri: 'https://env-1542080.mircloud.ru/',
+    uri: 'https://env-1542080.mircloud.ru',
     request: (operation) => {
         const token = localStorage.getItem(AUTH_TOKEN)
         operation.setContext({
