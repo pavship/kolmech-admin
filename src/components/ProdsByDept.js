@@ -92,7 +92,9 @@ const ProdsByDept = ({
       return depts
     }, [])
   if (modes['order']) {
-    const unreservedProdsCount = orderProdsQty - selectedProds.length
+    const unreservedProdsCount = diff
+      ? orderProdsQty - selectedProds.length
+      : orderProdsQty - oriProds.length
     if (unreservedProdsCount) {
       depts.unshift({
         id: 'unreserved',
