@@ -1,114 +1,142 @@
 import React, { Fragment } from 'react'
 
-import styled from 'styled-components'
+import GlobalContext from './special/GlobalContext'
 
-import NumberFormat from 'react-number-format'
-import { currency } from '../utils/format';
+import Table from './common/Table'
+import TableRow from './common/TableRow'
 
-const TableHeader = styled.div`
-    // padding: 0 14px;
-    font-size: 1rem;
-    color: rgba(0,0,0,.8);
-    background: #f3f4f5;
-    border-top: 1px solid #d4d4d5;
-    border-bottom: 1px solid #d4d4d5;
-`
+const fields = [{
+	name: 'num',
+	path: 'num',
+	title: '№',
+	width: '40px'
+},{
+	name: 'date',
+	path: 'dateLocal',
+	title: 'Дата',
+	width: '110px'
+},{
+	name: 'org',
+	path: 'org.name',
+	title: 'Организация',
+	width: '250px'
+},{
+	name: 'model',
+	path: 'model.name',
+	title: 'Изделие',
+	width: '250px'
+},{
+	name: 'qty',
+	path: 'qty',
+	title: 'Кол.',
+	width: '50px'
+},{
+	name: 'reserved',
+	title: 'Рез.',
+	width: '50px'
+},{
+	name: 'amount',
+	path: 'lastCoEvents.0.doc.amount',
+	title: 'Сумма',
+	width: '105px'
+},{
+	name: 'status',
+	path: 'curStatusEvents.0.status.name',
+	title: 'Статус',
+	width: '130px'
+}]
 
-const Table = styled.table`
-    table-layout: fixed;
-    width: 100%;
-    border-collapse: collapse;
-`
-
-const Tr = styled.tr` `
-
-const EnquiryRow = styled.tr`
-    font-size: 1rem;
-    cursor: pointer;
-    &:hover {
-        background-color: rgba(0,0,0,.03);
-    }
-    // @ts-ignore
-    ${props => props.active && `{
-        background-color: rgba(0,0,0,.03);
-        font-weight: bold;
-    }`}
-`
-
-const Td = styled.td`
-	padding-left: 4px;
-    :nth-child(1) {
-        width: 10px;
-    }
-    :nth-child(2) {
-        width: 40px;
-    }
-    :nth-child(3) {
-        width: 110px;
-    }
-    :nth-child(4) {
-        width: 250px;
-    }
-    :nth-child(5) {
-        width: 250px;
-    }
-    :nth-child(6) {
-        width: 50px;
-    }
-    :nth-child(7) {
-        width: 105px;
-    }
-    :nth-child(8) {
-        width: 130px;
-    }
-    :nth-child(9) {
-
-    }
-`
-
-const EnquiriesTable = ({ enquiries, activeEnquiryId, handleEnquiryLineClick }) => {
-    return (
-        <Fragment>
-            <TableHeader>
-                <Table>
-                    {/* <colgroup> <Col /> <Col /> <Col /> <Col /> <Col /> </colgroup> */}
-                    <tbody><tr>
-                        <Td></Td>
-                        <Td>№</Td>
-                        <Td>Дата</Td>
-                        <Td>Организация</Td>
-                        <Td>Изделие</Td>
-                        <Td>Кол.</Td>
-                        <Td>Сумма</Td>
-                        <Td>Статус</Td>
-                        <Td></Td>
-                        {/* <Td>Сумма КП</Td>
-                        <Td>Статус</Td> */}
-                </tr></tbody></Table>
-            </TableHeader>
-            <Table>
-                {/* <colgroup> <Col /> <Col /> <Col /> <Col /> <Col /> </colgroup> */}
-                <tbody>
-                    {enquiries.map(({ id, num, dateLocal, org, model, qty, curStatusEvents, lastCoEvents }) => <Fragment key={id}>
-                        <EnquiryRow onClick={() => handleEnquiryLineClick(id)} active={id === activeEnquiryId}>
-                            <Td></Td>
-                            <Td>{num}</Td>
-                            <Td>{dateLocal}</Td>
-                            <Td>
-                                {org && org.name}
-                                {/* <Caret name='dropdown' active={activeIndex.includes(name) ? 1 : 0} /> */}
-                                {/* {name} <ProdQtyLabel color='grey' basic content={`${prods.length}шт`} /> */}
-                            </Td>
-                            <Td>{model.name}</Td>
-                            <Td>{qty}</Td>
-                            <Td>{lastCoEvents[0] && currency(lastCoEvents[0].doc.amount)}</Td>
-                            <Td>{curStatusEvents[0] && curStatusEvents[0].status.name}</Td>
-                            <Td></Td>
-                        </EnquiryRow></Fragment>)}
-                </tbody>
-            </Table>
-        </Fragment>
-    )
+const EnquiriesTable = ({ enquiries }) => {
+	return (
+		<GlobalContext>
+			{({ details, setDetails, setExpanded }) =>
+				<Table
+					fields={fields}
+				>
+					{({ tableFields }) => 
+						enquiries.map(enquiry => {
+							const { id, isExpanded } = enquiry
+							return (
+								<Fragment key={id} >
+									<TableRow
+										entity={enquiry}
+										tableFields={tableFields}
+										expandFor='orders'
+										expanded={isExpanded}
+										// setExpanded={setExpanded}
+										expand={() => {
+											setExpanded({
+												id,
+												value: !isExpanded
+											}
+										)}}
+										active={
+											details
+											&& details.type === 'Enquiry'
+											&& id === details.id
+										}
+										onClick={() => {
+											setDetails({
+												type: 'Enquiry',
+												id
+											})
+											setExpanded({
+												id,
+												value: !isExpanded
+											})
+										}}
+									>
+									</TableRow>
+									{	isExpanded && enquiry.orders.map((order, i) => {
+										const { id, num, prods } = order
+										return (
+											// @ts-ignore
+											<TableRow
+												secondary={1}
+												lastSecondaryRow={i === enquiry.orders.length - 1 ? 1 : 0}
+												key={id}
+												entity={order}
+												tableFields={tableFields}
+												rowFields={[{
+													name: 'num',
+													value: enquiry.num + '-' + num
+												},{
+													name: 'org',
+													value: enquiry.org.name
+												},{
+													name: 'model',
+													value: enquiry.model && enquiry.model.name //check only for migration from aws
+												},{
+													name: 'reserved',
+													value: prods.length
+												},{
+													name: 'amount',
+													path: 'amount'
+												}]}
+												active={
+													details
+													&& details.type === 'Order'
+													&& id === details.id
+												}
+												onClick={() => {
+													setDetails({
+														type: 'Order',
+														id
+													})
+												}}
+											>
+											</TableRow>
+										)
+									})}
+								</Fragment>
+							)
+						}
+					)}
+				</Table>
+				// {/* {name} <ProdQtyLabel color='grey' basic content={`${prods.length}шт`} /> */}
+			}
+		</GlobalContext>
+	)
 }
 
 export default EnquiriesTable

@@ -16,6 +16,5 @@ export function isTokenExpired(token) {
   if (date === null) {
     return false
   }
-  console.log(date, new Date().valueOf() + offsetSeconds * 1000)
   return !(date.valueOf() > new Date().valueOf() + offsetSeconds * 1000)
 }

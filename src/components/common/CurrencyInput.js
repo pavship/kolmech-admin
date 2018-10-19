@@ -7,7 +7,7 @@ import { Span } from '../styled-semantic/styled-semantic'
 
 class CurrencyInput extends Component {
     render() {
-        const { value, placeholder, setFormFieldValue } = this.props
+        const { placeholder, field: {name, curVal: value}, setField } = this.props
         return (
             <Fragment>
                 <NumberFormat
@@ -18,7 +18,7 @@ class CurrencyInput extends Component {
                     thousandSeparator=' '
                     decimalScale={2}
                     allowNegative={false}
-                    onValueChange={values => setFormFieldValue('amount', values.floatValue)} />
+                    onValueChange={values => setField(name, {value: values.floatValue})} />
                 <Span pl='6px' fs='1.1rem' c='rgba(0,0,0,.87)'>₽</Span>
                 <Span pl='9px' fs='1.1rem' ws='0.1em'>с НДС</Span>
             </Fragment>

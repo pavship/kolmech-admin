@@ -19,25 +19,26 @@ const PickerDiv = styled.div`
 `
 
 class LocalDatePicker extends Component {
-    state = {
-        err: false
-    }
     handleDayChange = (pickedDate) => {
-        console.log('pickedDate > ', pickedDate)
+        // console.log('pickedDate > ', pickedDate)
+        const { setField, field: { name }} = this.props
         if (!isValidDate(pickedDate)) {
-            this.props.setFormFieldError('dateLocal', {
-                title: 'Ошибка ввода даты', 
-                message: 'Дата не соответствует формату ГГГГ-ММ-ДД'
+            setField(name, {
+                err: {
+                    title: 'Ошибка ввода даты', 
+                    message: 'Дата не соответствует формату ГГГГ-ММ-ДД'
+                }
             })
             return
         }
-        this.setState({ err: false })
-        this.props.setFormFieldValue('dateLocal', toLocalISOString(pickedDate).slice(0, 10))
+        setField(name, {
+            value: toLocalISOString(pickedDate).slice(0, 10)
+        })
     }
     render() {
-        const { value, err } = this.props
+        const { field: {curVal: value, err} } = this.props
         return (
-            <PickerDiv err={!!err.message}>
+            <PickerDiv err={!!err}>
                 <DayPickerInput
                     value={value}
                     onDayChange={this.handleDayChange}

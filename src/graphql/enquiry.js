@@ -1,4 +1,5 @@
 import gql from 'graphql-tag'
+import { orderFragmentBasic } from './order'
 
 export const allEnquiries = gql`
 	query AllEnquiries {
@@ -7,11 +8,14 @@ export const allEnquiries = gql`
 			num
 			dateLocal
 			htmlNote
+			isExpanded @client
 			org {
 				id
-				name }
+				name
+			}
 			model {
 				id
+				article
 				name
 			}
 			qty
@@ -30,8 +34,15 @@ export const allEnquiries = gql`
 					amount
 				}
 			}
+			orders {
+				...OrderFragmentBasic
+				prods {
+					id
+				}
+			}
 		}
 	}
+	${orderFragmentBasic}
 `
 export const enquiryDetails = gql`
 	query EnquiryDetails ($id: ID!) {
@@ -74,14 +85,6 @@ export const enquiryDetails = gql`
 					amount
 				}
 			}
-			# coEvents: events ( where: { doc: { type: CO } } ) {
-			# 	id
-			# 	doc {
-			# 		id
-			# 		dateLocal
-			# 		amount
-			# 	}
-			# }
 		}
 		statuses {
 			id
@@ -91,6 +94,18 @@ export const enquiryDetails = gql`
 				id
 			}
 			next {
+				id
+			}
+		}
+	}
+`
+export const enquiryLocal = gql`
+	query EnquiryLocal ($id: ID!) {
+		enquiryLocal (id: $id) {
+			id
+			num
+			dateLocal
+			lastCoEvents: events ( where: { doc: { type: CO } }, last: 1 ) {
 				id
 			}
 		}
@@ -131,6 +146,21 @@ export const createEnquiry = gql`
 				name
 			}
 			qty
+			curStatusEvents: events ( where: { status: { id_not: null } }, last: 1 ) {
+				id
+				status {
+					id
+					name
+					stage
+				}
+			}
+			lastCoEvents: events ( where: { doc: { type: CO } }, last: 1 ) {
+				id
+				doc {
+					id
+					amount
+				}
+			}
 			events {
 				id
 				datetimeLocal
@@ -154,6 +184,13 @@ export const createEnquiry = gql`
 					dateLocal
 					amount
 				}
+			}
+			orders {
+				id
+				num
+				dateLocal
+				qty
+				amount
 			}
 		}
 	}
@@ -238,10 +275,17 @@ export const enquiryFragment = gql`
 		num
 		dateLocal
 		htmlNote
+		isExpanded
 		org {
 			id
 			name
 		}
+		model {
+			id
+			article
+			name
+		}
+		qty
 		events {
 			id
 			datetimeLocal
@@ -252,13 +296,13 @@ export const enquiryFragment = gql`
 				person {
 					id
 					fName
-					lName
+					lName 
 				}
 			}
 			status {
 				id
 				name
-				stage
+				stage 
 			}
 			doc {
 				id

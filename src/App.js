@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import React from 'react'
 
 import { ThemeProvider } from 'styled-components'
 import { theme } from './components/styled-semantic/styled-semantic'
@@ -18,9 +18,9 @@ import Root from './components/Root'
 // }
 
 const App = ({ token, client }) => (
-    <ThemeProvider theme={theme}>
-        <Root token={token} client={client} />
-    </ThemeProvider>
+	<ThemeProvider theme={theme}>
+		<Root token={token} client={client} />
+	</ThemeProvider>
 )
 
 export default App

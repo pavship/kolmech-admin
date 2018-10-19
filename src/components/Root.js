@@ -1,13 +1,13 @@
 import React, { Component, Fragment } from 'react'
+
 import { AUTH_TOKEN } from '../constants'
-
 import { isTokenExpired } from '../utils/jwtHelper'
-
-import LoginPage from './LoginPage'
-import EnquiriesPage from './EnquiriesPage'
 
 import { Query } from 'react-apollo'
 import { me } from '../graphql/user'
+
+import LoginPage from './LoginPage'
+import EnquiriesPage from './EnquiriesPage'
 
 class Root extends Component {
 	state = {
@@ -41,7 +41,7 @@ class Root extends Component {
             this.props.client.resetStore()
 		}
 		this.setState({ token })
-    }
+	}
 	render() {
 		const { token } = this.state
 		return (
@@ -49,14 +49,15 @@ class Root extends Component {
 				{ !token 
 				  ?	<LoginPage refreshToken={this.refreshToken} />
 				  : <Query query={me} >
-                        { ({ loading, error, data }) => {
-                            if (loading) return null
-                            if (error) return `Error!: ${error.message}`
-                            return (
-                                <EnquiriesPage refreshToken={this.refreshToken} me={data.me} />
-                            )
-                        }}
-                    </Query> }
+							{({ loading, error, data }) => {
+								if (loading) return null
+								if (error) return `Error!: ${error.message}`
+								return (
+									<EnquiriesPage refreshToken={this.refreshToken} me={data.me} />
+								)
+							}}
+					</Query> 
+				}
 			</Fragment>
 		)
 	}
