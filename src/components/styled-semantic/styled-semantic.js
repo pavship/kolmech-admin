@@ -26,10 +26,11 @@ export const theme = {
 	}
 }
 const getThemeColor = (color) => theme.colors[color] || color
-const baseSet = ({ theme, w, m, ml, pl, fs, fw, c, lh, ta, ws }) => {
+const baseSet = ({ theme, w, m, mt, ml, pl, fs, fw, c, lh, ta, ws }) => {
 	return `
 		${w ? `width: ${theme.widths[w] || w};`: ''}
 		${m ? `margin: ${m};`: ''}
+		${mt ? `margin-top: ${mt};`: ''}
 		${ml ? `margin-left: ${ml};`: ''}
 		${pl ? `padding-left: ${pl};`: ''}
 		${fs ? `font-size: ${fs};`: ''}

@@ -1,5 +1,7 @@
 import gql from 'graphql-tag'
 import { orderFragmentBasic } from './order'
+import { docFragmentBasic } from './doc'
+import { statusFragment } from './status'
 
 export const allEnquiries = gql`
 	query AllEnquiries {
@@ -19,30 +21,19 @@ export const allEnquiries = gql`
 				name
 			}
 			qty
-			curStatusEvents: events ( where: { status: { id_not: null } }, last: 1 ) {
-				id
-				status {
-					id
-					name
-					stage
-				}
-			}
-			lastCoEvents: events ( where: { doc: { type: CO } }, last: 1 ) {
-				id
-				doc {
-					id
-					amount
-				}
-			}
 			orders {
 				...OrderFragmentBasic
 				prods {
 					id
 				}
 			}
+			status { ...StatusFragment }
+			docs { ...DocFragmentBasic }
 		}
 	}
 	${orderFragmentBasic}
+	${docFragmentBasic}
+	${statusFragment}
 `
 export const enquiryDetails = gql`
 	query EnquiryDetails ($id: ID!) {
@@ -74,16 +65,8 @@ export const enquiryDetails = gql`
 						lName 
 					}
 				}
-				status {
-					id
-					name
-					stage 
-				}
-				doc {
-					id
-					dateLocal
-					amount
-				}
+				status { ...StatusFragment }
+				doc { ...DocFragmentBasic }
 			}
 		}
 		statuses {
@@ -98,6 +81,8 @@ export const enquiryDetails = gql`
 			}
 		}
 	}
+	${docFragmentBasic}
+	${statusFragment}
 `
 export const enquiryLocal = gql`
 	query EnquiryLocal ($id: ID!) {
@@ -105,11 +90,10 @@ export const enquiryLocal = gql`
 			id
 			num
 			dateLocal
-			lastCoEvents: events ( where: { doc: { type: CO } }, last: 1 ) {
-				id
-			}
+			docs { ...DocFragmentBasic }
 		}
 	}
+	${docFragmentBasic}
 `
 export const newEnquiry = gql`
 	query {
@@ -146,21 +130,8 @@ export const createEnquiry = gql`
 				name
 			}
 			qty
-			curStatusEvents: events ( where: { status: { id_not: null } }, last: 1 ) {
-				id
-				status {
-					id
-					name
-					stage
-				}
-			}
-			lastCoEvents: events ( where: { doc: { type: CO } }, last: 1 ) {
-				id
-				doc {
-					id
-					amount
-				}
-			}
+			status { ...StatusFragment }
+			docs { ...DocFragmentBasic }
 			events {
 				id
 				datetimeLocal
@@ -174,16 +145,8 @@ export const createEnquiry = gql`
 						lName 
 					}
 				}
-				status {
-					id
-					name
-					stage
-				}
-				doc {
-					id
-					dateLocal
-					amount
-				}
+				status { ...StatusFragment }
+				doc { ...DocFragmentBasic }
 			}
 			orders {
 				id
@@ -194,6 +157,8 @@ export const createEnquiry = gql`
 			}
 		}
 	}
+	${docFragmentBasic}
+	${statusFragment}
 `
 export const updateEnquiry = gql`
 	mutation UpdateEnquiry($input: EnquiryInput!) {
@@ -225,19 +190,13 @@ export const updateEnquiry = gql`
 						lName
 					}
 				}
-				status {
-					id
-					name
-					stage
-				}
-				doc {
-					id
-					dateLocal
-					amount
-				}
+				status { ...StatusFragment }
+				doc { ...DocFragmentBasic }
 			}
 		}
 	}
+	${docFragmentBasic}
+	${statusFragment}
 `
 
 export const createEnquiryEvent = gql`
@@ -255,18 +214,12 @@ export const createEnquiryEvent = gql`
 					lName
 				}
 			}
-			status {
-				id
-				name
-				stage
-			}
-			doc {
-				id
-				dateLocal
-				amount
-			}
+			status { ...StatusFragment }
+			doc { ...DocFragmentBasic }
 		}
 	}
+	${docFragmentBasic}
+	${statusFragment}
 `
 
 export const enquiryFragment = gql`

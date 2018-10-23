@@ -19,7 +19,7 @@ const fields = [{
 	name: 'org',
 	path: 'org.name',
 	title: 'Организация',
-	width: '250px'
+	width: '260px'
 },{
 	name: 'model',
 	path: 'model.name',
@@ -36,12 +36,11 @@ const fields = [{
 	width: '50px'
 },{
 	name: 'amount',
-	path: 'lastCoEvents.0.doc.amount',
 	title: 'Сумма',
 	width: '105px'
 },{
 	name: 'status',
-	path: 'curStatusEvents.0.status.name',
+	path: 'status.name',
 	title: 'Статус',
 	width: '130px'
 }]
@@ -55,12 +54,16 @@ const EnquiriesTable = ({ enquiries }) => {
 				>
 					{({ tableFields }) => 
 						enquiries.map(enquiry => {
-							const { id, isExpanded } = enquiry
+							const { id, isExpanded, docs } = enquiry
 							return (
 								<Fragment key={id} >
 									<TableRow
 										entity={enquiry}
 										tableFields={tableFields}
+										rowFields={[{
+											name: 'amount',
+											value: docs.length && docs[docs.length - 1].amount
+										}]}
 										expandFor='orders'
 										expanded={isExpanded}
 										// setExpanded={setExpanded}

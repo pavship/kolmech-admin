@@ -60,8 +60,8 @@ const EnquiriesSubmenu = () => {
 				>
 					{({ data }) => {
 						if (data && data.enquiryLocal) {
-							const { num, lastCoEvents } = data.enquiryLocal
-							const addNewOrderForbidden = !lastCoEvents.length
+							const { num, docs } = data.enquiryLocal
+							const addNewOrderForbidden = !docs.some(d => d.type === 'CO')
 							return (
 								<SubmenuDiv>
 									<Header inline

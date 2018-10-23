@@ -9,7 +9,7 @@ const defaultFields = [{
 	name: 'name',
 	path: 'name',
 	title: 'Участок / № Изделия',
-	width: '150px'
+	width: '170px'
 },{
 	name: 'progress',
 	path: 'progress',
@@ -24,11 +24,11 @@ const defaultFields = [{
 	name: 'isSpoiled',
 	path: 'isSpoiled',
 	title: 'Брак',
-	width: '65px'
+	width: '55px'
 },{
 	name: 'reserve',
 	title: 'Резерв',
-	width: '85px'
+	width: '75px'
 }]
 
 const DeptProdTable = ({

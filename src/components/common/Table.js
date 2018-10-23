@@ -37,18 +37,18 @@ const Table = ({
 		expand: !!expand,
 	}
 	const fieldsExtended = [
-		...modes['indent'] && [{
+		...modes['indent'] ? [{
 			name: 'indent',
 			width: indent
-		}],
+		}] : [],
 		{
 			name: 'service',
 			width: '23px'
 		},
-		...modes['select'] && [{
+		...modes['select'] ? [{
 			name: 'select',
 			width: '25px'
-		}],
+		}]: [],
 		...fields,
 		// lastField is needed to take remaining width in fixed table-layout
 		{ name: 'lastField' }
