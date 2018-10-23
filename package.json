@@ -1,7 +1,7 @@
 {
   "name": "kolmech-admin-dev",
   "homepage": "https://pavship.github.io/kolmech-admin",
-  "version": "2.0.0",
+  "version": "2.1.0",
   "private": true,
   "dependencies": {
     "apollo-boost": "^0.1.13",
