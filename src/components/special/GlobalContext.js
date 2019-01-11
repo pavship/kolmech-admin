@@ -25,7 +25,7 @@ import { getLists, getListsOptions, setList } from '../../graphql/lists'
 
 const GlobalContext = ({
 		children,
-		layout: { details, extra },
+		layout: { details, extra, bottomPanel },
 		setLayout,
 		setExpanded,
 		lists: { selectedProdIds },
@@ -38,6 +38,7 @@ const GlobalContext = ({
   return children({
 		details,
 		extra,
+		bottomPanel,
 		setDetails: (details) => {
 			setLayout({ variables: { 
 				details,
@@ -46,6 +47,7 @@ const GlobalContext = ({
 			}})
 		},
 		setExtra: (extra) => setLayout({ variables: { extra } }),
+		setBottomPanel: (bottomPanel) => setLayout({ variables: { bottomPanel } }),
 		setExpanded: (args) => setExpanded({variables: { args }}),
 		selectedProdIds,
 		setSelectedProdIds: (value) => 

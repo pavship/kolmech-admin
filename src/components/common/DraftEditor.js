@@ -42,14 +42,14 @@ class DraftEditor extends React.Component {
 	kolmechKeyBindingFn = (e) => {
 		// catch Ctrl + Enter event
 		if (e.keyCode === 13 && KeyBindingUtil.hasCommandModifier(e)) {
-		  return 'kolmech-enter'
+		  return 'ctrlEnter'
 		}
 		return getDefaultKeyBinding(e)
 	}
 	handleKeyCommand = (command, editorState) => {
 		// handle Ctrl + Enter command
-		if (command === 'kolmech-enter') {
-			this.props.onSave()
+		if (command === 'ctrlEnter') {
+			this.props.onCtrlEnter()
 			return 'handled'
 		}
 		const newState = RichUtils.handleKeyCommand(editorState, command);

@@ -2,7 +2,7 @@ import React from 'react'
 
 import styled from 'styled-components'
 import { Icon } from 'semantic-ui-react'
-import { Button } from './styled-semantic/styled-semantic'
+import { Button } from './styled/styled-semantic'
 
 import GlobalContext from './special/GlobalContext'
 

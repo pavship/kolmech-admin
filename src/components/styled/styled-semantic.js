@@ -11,7 +11,9 @@ import {
 	Button as SButton,
 	Message as SMessage,
 	Popup as SPopup,
-	Dropdown as SDropdown
+	Input as SInput,
+	Dropdown as SDropdown,
+	Form as SForm
 } from 'semantic-ui-react'
 
 export const theme = {
@@ -22,45 +24,62 @@ export const theme = {
 	},
 	colors: {
 		green: '#016936',
-		blue: '#0E6EB8'
+		blue: '#0E6EB8',
+		error: '#9f3a38',
+		errorBorder: '#e0b4b4'
 	}
 }
 const getThemeColor = (color) => theme.colors[color] || color
-const baseSet = ({ theme, w, m, mt, ml, pl, fs, fw, c, lh, ta, ws }) => {
+const baseSet = ({ theme, bt, bb, bc, bs, c, d, fs, fw, h, lh, mw, m, mb, mt, ml, o, ox, oy, p, pl, pr, pt, ta, va, w, ws }) => {
 	return `
-		${w ? `width: ${theme.widths[w] || w};`: ''}
-		${m ? `margin: ${m};`: ''}
-		${mt ? `margin-top: ${mt};`: ''}
-		${ml ? `margin-left: ${ml};`: ''}
-		${pl ? `padding-left: ${pl};`: ''}
-		${fs ? `font-size: ${fs};`: ''}
-		${fw ? `font-weight: ${fw};`: ''}
-		${c ? `color: ${c};`: ''}
-		${lh ? `line-height: ${lh};`: ''}
-		${ta ? `text-align: ${ta};`: ''}
-		${ws ? `word-spacing: ${ws};`: ''}
+		${bt 	? `border-top: ${bt};`								: ''}
+		${bb 	? `border-bottom: ${bb};`							: ''}
+		${bc 	? `background-color: ${bc};`					: ''}
+		${bs 	? `box-sizing: ${bs};`								: ''}
+		${c 	? `color: ${c};`											: ''}
+		${d 	? `display: ${d};`										: ''}
+		${fs 	? `font-size: ${fs};`									: ''}
+		${fw 	? `font-weight: ${fw};`								: ''}
+		${h 	? `height: ${h};`											: ''}
+		${lh 	? `line-height: ${lh};`								: ''}
+		${mw 	? `max-width: ${mw};`									: ''}
+		${m 	? `margin: ${m};`											: ''}
+		${mb 	? `margin-bottom: ${mb};`							: ''}
+		${mt 	? `margin-top: ${mt};`								: ''}
+		${ml 	? `margin-left: ${ml};`								: ''}
+		${o  	? `opacity: ${o};`										: ''}
+		${ox  ? `overflow-x: ${ox};`								: ''}
+		${oy  ? `overflow-y: ${oy};`								: ''}
+		${p 	? `padding: ${p};`										: ''}
+		${pl 	? `padding-left: ${pl};`							: ''}
+		${pr 	? `padding-right: ${pr};`							: ''}
+		${pt 	? `padding-top: ${pt};`								: ''}
+		${ta 	? `text-align: ${ta};`								: ''}
+		${va 	? `vertical-align: ${va};`						: ''}
+		${w 	? `width: ${theme.widths[w] || w};`		: ''}
+		${ws 	? `word-spacing: ${ws};`							: ''}
 	`
 }
 
-const DivWithFilteredProps = ({ ml, inline, ...rest }) => (
+const DivPropFilter = ({ ml, inline, ...rest }) => (
 	<div {...rest} />
 )
-export const Div = styled(DivWithFilteredProps)`
+export const Div = styled(DivPropFilter)`
 	${props => props.inline && `display: inline-block;`}
 	${props => baseSet(props)}
 `
 
-const PWithFilteredProps = ({ ...rest }) => (
+const PPropFilter = ({ ...rest }) => (
 	<p {...rest} />
 )
-export const P = styled(PWithFilteredProps)`
+export const P = styled(PPropFilter)`
 	${props => baseSet(props)}
 `
 
-const SpanWithFilteredProps = ({ ml, ...rest }) => (
+const SpanPropFilter = ({ ml, ...rest }) => (
 	<span {...rest} />
 )
-export const Span = styled(SpanWithFilteredProps)`
+export const Span = styled(SpanPropFilter)`
 	${props => baseSet(props)}
 `
 
@@ -75,10 +94,10 @@ export const A = styled.a`
 	}`}
 `
 
-const HeaderWithFilteredProps = ({ inline, c, ...rest }) => (
+const HeaderPropFilter = ({ inline, c, ...rest }) => (
 	<SHeader {...rest} />
 )
-export const Header = styled(HeaderWithFilteredProps)`
+export const Header = styled(HeaderPropFilter)`
 	&&&& {
 		${props => baseSet(props)}
 	}
@@ -90,9 +109,23 @@ export const Header = styled(HeaderWithFilteredProps)`
 	}
 `
 
-export const Label = styled.label`
-	width: ${props => props.theme.widths.formLabel} !important;
-	margin-right: 0 !important;
+const IconPropFilter = ({ activeColor, ...rest }) => (
+	<SIcon {...rest} />
+)
+export const Icon = styled(IconPropFilter)`
+	&&&& {
+		${props => baseSet(props)}
+	}
+	&&& {
+		${props => props.activeColor && `{
+			&:hover {
+				color: ${getThemeColor(props.activeColor)} !important;
+			}
+			&.active {
+				color: ${getThemeColor(props.activeColor)} !important;
+			}
+		}`}
+	}
 `
 
 const DropdownIcon = ({active, disabled, ...rest}) => (
@@ -115,10 +148,10 @@ export const Caret = styled(DropdownIcon)`
 	}
 `
 
-const ButtonWithFilteredProps = ({ activeColor, menu, ...rest }) => (
+const ButtonPropFilter = ({ activeColor, menu, ...rest }) => (
 	<SButton {...rest} />
 )
-export const Button = styled(ButtonWithFilteredProps)`
+export const Button = styled(ButtonPropFilter)`
 	&&&& {
 		${props => baseSet(props)}
 	}
@@ -141,13 +174,16 @@ export const Button = styled(ButtonWithFilteredProps)`
 	}
 `
 
-const MessageWithFilteredProps = ({
+const MessagePropFilter = ({
 	section,
 	...rest
 }) => (
 	<SMessage {...rest} />
 )
-export const Message = styled(MessageWithFilteredProps)`
+export const Message = styled(MessagePropFilter)`
+	&&&& {
+		${props => baseSet(props)}
+	}
 	&&& {
 		${props => props.section && `
 			margin-top: 0;
@@ -218,10 +254,10 @@ export const Section = styled(SectionPropFiltered)`
 	}`}
 `
 
-const PopupWithFilteredProps = ({ showIf, ...rest }) => (
+const PopupPropFilter = ({ showIf, ...rest }) => (
 	<SPopup {...rest} />
 )
-export const Popup = styled(PopupWithFilteredProps)`
+export const Popup = styled(PopupPropFilter)`
 	&&& {
 		${props => !props.showIf && `{
 			opacity: 0;
@@ -229,11 +265,32 @@ export const Popup = styled(PopupWithFilteredProps)`
 	}
 `
 
+export const Label = styled.label`
+	${props => baseSet(props)}
+	width: ${props => props.theme.widths.formLabel} !important;
+	margin-right: 0 !important;
+`
+
+const InputPropFilter = ({ w, ...rest }) => (
+	<SInput {...rest} />
+)
+export const Input = styled(InputPropFilter)`
+	&&&& {
+		${props => baseSet(props)}
+	}
+`
+
 export const Dropdown = styled(SDropdown)`
-	&&&&&& {
-		width: 350px;
-		&:hover {
-			border-color: rgba(34, 36, 38, 0.15);
-		}
+	&&&& {
+		${props => baseSet(props)}
+	}
+`
+
+const FormFieldPropFilter = ({ w, ...rest }) => (
+	<SForm.Field {...rest} />
+)
+export const FormField = styled(FormFieldPropFilter)`
+	&&&& {
+		${props => baseSet(props)}
 	}
 `

@@ -34,6 +34,23 @@ const client = new ApolloClient({
 			}
 		})
 	},
+	onError: ({ graphQLErrors, networkError }) => {
+    if (graphQLErrors) {
+			console.log('graphQLErrors!!! > ', graphQLErrors)
+      // sendToLoggingService(graphQLErrors);
+    }
+    if (networkError) {
+			console.log('networkError!!! > ', networkError)
+			console.log('networkError.name > ', networkError.name)
+			console.log('networkError.message > ', networkError.message)
+			console.log(networkError.message === 'Unexpected token I in JSON at position 0')
+			if (networkError.message === 'Unexpected token I in JSON at position 0') refreshToken(null)
+      // logoutUser();
+		}
+		// networkError!!! >  SyntaxError: Unexpected token I in JSON at position 0
+    // at JSON.parse (<anonymous>)
+    // at index.js:43
+  },
 	clientState: {
 		defaults,
 		resolvers,
@@ -48,6 +65,8 @@ const client = new ApolloClient({
 		},
 		cacheRedirects: {
 			Query: {
+				orgLocal: (_, args, { getCacheKey }) =>
+					getCacheKey({ __typename: 'Org', id: args.id }),
 				enquiryLocal: (_, args, { getCacheKey }) =>
 					getCacheKey({ __typename: 'Enquiry', id: args.id }),
 				orderLocal: (_, args, { getCacheKey }) =>
@@ -61,6 +80,15 @@ const client = new ApolloClient({
 		}
 	})
 })
+
+const refreshToken = (token) => {
+	if (token) {
+		localStorage.setItem(AUTH_TOKEN, token)
+	} else {
+		localStorage.removeItem(AUTH_TOKEN)
+		client.resetStore()
+	}
+}
 
 // const cache = new InMemoryCache({
 //     dataIdFromObject: object => {
@@ -125,13 +153,11 @@ const client = new ApolloClient({
 //     connectToDevTools: true,
 // })
 
-const token = localStorage.getItem(AUTH_TOKEN)
-
 // client.cache.reset()
 
 ReactDOM.render(
 	<ApolloProvider client={client}>
-		<App token={token} client={client}/>
+		<App client={client}/>
 	</ApolloProvider>
 , document.getElementById('root'))
 

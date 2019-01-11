@@ -2,7 +2,7 @@ import React from 'react'
 
 import styled from 'styled-components'
 import { Icon } from 'semantic-ui-react'
-import { Caret } from '../styled-semantic/styled-semantic'
+import { Caret } from '../styled/styled-semantic'
 
 import { getObjProp } from '../../utils/object'
 import { currency } from '../../utils/format'
@@ -30,10 +30,34 @@ const Row = styled.tr`
 	`}
 `
 
+const tdActiveStyle = `
+	background: rgba(0,0,0,.12);
+	.icon {
+		opacity: 1 !important;
+	}
+`
+
 const Td = styled.td`
 	padding-right: 4px;
-	${props => props.service && `
-		padding-left: 3px;
+	white-space: nowrap;
+	overflow: hidden;
+  text-overflow: ellipsis;
+	${props => props.service && `padding-left: 3px;`}
+	${Row}:not(:hover) & {
+		${props => props.type === 'onHover' && !props.active && `
+			opacity: 0 !important;
+		`}
+	}
+	${props => props.type === 'onHover' && `
+		padding-left: 5px;
+		transition: background .3s ease;
+		:hover {
+			${tdActiveStyle}
+		}
+		${props.active ? tdActiveStyle : ''}
+	`}
+	${props => props.styles && props.styles.includes('center') && `
+		text-align: center;
 	`}
 `
 
@@ -55,7 +79,6 @@ const TableRow = ({
 			{...rest}
 		>
 			{fields.map(f => {
-				// console.log(f)
 				if (
 					f.name === 'service'
 					&& typeof expanded !== 'undefined'
@@ -97,23 +120,43 @@ const TableRow = ({
 						/>
 					</Td>
 				)
-				if (f.content) return (
+				const {
+					content,
+					name,
+					value,
+					path,
+					onClick,
+					icon,
+					iconColor,
+					...rest
+				} = f
+				if (content) return (
 					<Td
-						key={f.name}
+						key={name}
 					>
-						{f.content}
+						{content}
 					</Td>
 				)
-				let val = f.value || (f.path ? getObjProp(entity, f.path) : null)
-				if (val && f.name === 'amount') val = currency(val)
+				let val = value || (path ? getObjProp(entity, path) : null)
+				if (val && name === 'amount') val = currency(val)
 				return (
 					<Td
-						key={f.name}
+						key={name}
+						{...rest}
+						onClick={
+							!!onClick
+							? e => {
+									e.stopPropagation()
+									onClick()
+								}
+							: undefined
+						}
 					>
-						{val && f.icon &&
+						{val && icon &&
 							<Icon
-								name={f.icon}
-								color={f.iconColor || false}
+								link={!!onClick}
+								name={icon}
+								color={iconColor || undefined}
 							/>
 						}
 						{val}

@@ -35,10 +35,10 @@ class Root extends Component {
 	}
 	refreshToken = (token) => {
 		if (token) {
-		  	localStorage.setItem(AUTH_TOKEN, token)
+			localStorage.setItem(AUTH_TOKEN, token)
 		} else {
-            localStorage.removeItem(AUTH_TOKEN)
-            this.props.client.resetStore()
+			localStorage.removeItem(AUTH_TOKEN)
+			this.props.client.resetStore()
 		}
 		this.setState({ token })
 	}

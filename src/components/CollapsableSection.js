@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 
 import styled from 'styled-components'
-import { Section } from './styled-semantic/styled-semantic'
+import { Section } from './styled/styled-semantic'
 
 import DetailsHeader from './DetailsHeader'
 

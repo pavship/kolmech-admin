@@ -2,7 +2,7 @@ import React from 'react'
 
 import styled from 'styled-components'
 import { Icon } from 'semantic-ui-react'
-import { Header, Button } from './styled-semantic/styled-semantic'
+import { Header, Button } from './styled/styled-semantic'
 
 import EnquiriesSubmenu from './EnquiriesSubmenu'
 

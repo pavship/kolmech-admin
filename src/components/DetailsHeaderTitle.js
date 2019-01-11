@@ -1,6 +1,6 @@
 import React from 'react'
 
-import { Header } from './styled-semantic/styled-semantic'
+import { Header } from './styled/styled-semantic'
 import DetailsHeaderSubitle from './DetailsHeaderSubitle'
 
 const DetailsHeaderTitle = ({

@@ -1,9 +1,10 @@
 import React, { Component, Fragment } from 'react'
 
+import styled from 'styled-components'
+import { Table, Tr, Td, InputTd, EditorTd } from './styled/entity-table'
 import { Header as SHeader, Icon, Label, Form, Comment, 
 	Message, Dropdown } from 'semantic-ui-react'
-import { P, Div, Button, Section } from './styled-semantic/styled-semantic'
-import styled from 'styled-components'
+import { P, Div, Button, Section } from './styled/styled-semantic'
 
 import { graphql, compose } from 'react-apollo'
 import { enquiryDetails, newEnquiry, createEnquiryEvent, 
@@ -17,45 +18,6 @@ import { currency } from '../utils/format'
 
 import EnquiryEdit from './EnquiryEdit'
 import EnquiryCommercialOffer from './EnquiryCommercialOffer'
-
-const Table = styled.table`
-	/* table-layout: fixed; */
-	width: 100%;
-	border-collapse: collapse;
-`
-
-const Tr = styled.tr`
-  margin: 0 0 1em;
-  line-height: 1.4285em;
-  color: rgba(0,0,0,.87);
-`
-
-const Td = styled.td`
-  :nth-child(1) {
-		width: ${props => props.theme.widths.formLabel};
-	// color: rgba(0,0,0,.87);
-	/* font-size: .92857143em; */
-	/* line-height: 32px; */
-		line-height: 1.21428571em;
-		padding: .67857143em 0;
-		vertical-align: top;
-  }
-  :nth-child(2) {
-		// width: 100px;
-		font-size: 1em;
-		font-weight: bold;
-		line-height: 1.21428571em;
-		padding: .67857143em 0;
-  }
-`
-const InputTd = Td.extend`
-	padding-top: 0 !important;
-`
-
-const EditorTd = InputTd.extend`
-	font-weight: unset !important;
-	/* padding-bottom: 0 !important; */
-`
 
 const SDropdown = styled(Dropdown)`
 	& .active.item {
@@ -314,7 +276,7 @@ class EnquiryDetails extends Component {
 													initFromHtml={htmlNote}
 													setEditorDiff={this.setNoteEditorDiff}
 													diff={noteEditorDiff}
-													onSave={this.saveNote}
+													onCtrlEnter={this.saveNote}
 												/>
 												{noteEditorDiff &&
 													<Button

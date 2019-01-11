@@ -1,7 +1,7 @@
 import React from 'react'
 
 import { Icon, Popup as SPopup } from 'semantic-ui-react'
-import { Div, Header, Button, Popup } from './styled-semantic/styled-semantic'
+import { Div, Header, Button, Popup } from './styled/styled-semantic'
 import styled from 'styled-components'
 
 import { Query } from 'react-apollo'

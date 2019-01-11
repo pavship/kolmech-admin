@@ -6,12 +6,15 @@ const STable = styled.table`
 	table-layout: fixed;
 	width: 100%;
 	border-collapse: collapse;
+	/* TODO Make this table with scrollable tbody (Not trivial css trick) */
+	/* thead, tbody, tr {
+		display: block;
+	} */
 `
 
-const TableHeader = styled.tr`
+const TableHeaderRow = styled.tr`
 	color: rgba(0,0,0,.8);
 	line-height: 1.5em;
-	/* background: #f3f4f5; */
 	background: rgb(233, 234, 235);
 	border-top: 1px solid #d4d4d5;
 	border-bottom: 1px solid #d4d4d5;
@@ -22,6 +25,11 @@ const Td = styled.td`
 	padding-right: 4px;
 	// @ts-ignore
 	${props => props.w && `width: ${props.w};`}
+`
+
+const TBody = styled.tbody`
+	/* overflow-y: auto;
+  overflow-x: hidden; */
 `
 
 const Table = ({
@@ -43,11 +51,11 @@ const Table = ({
 		}] : [],
 		{
 			name: 'service',
-			width: '23px'
+			width: '28px'
 		},
 		...modes['select'] ? [{
 			name: 'select',
-			width: '25px'
+			width: '28px'
 		}]: [],
 		...fields,
 		// lastField is needed to take remaining width in fixed table-layout
@@ -55,9 +63,8 @@ const Table = ({
 	]
 	return (
 		<STable>
-			<tbody>
-				<Fragment>
-					<TableHeader>
+				<thead>
+					<TableHeaderRow>
 						{fieldsExtended.map(f =>{
 							// console.log(f)
 							return <Td
@@ -68,12 +75,15 @@ const Table = ({
 								{f.title}
 							</Td>
 						})}
-					</TableHeader>
+					</TableHeaderRow>
+				</thead>
+			<TBody>
+				<Fragment>
 					{children({
 						tableFields: fieldsExtended.map(f => ({ name: f.name, path: f.path })),
 					})}
 				</Fragment>
-			</tbody>
+			</TBody>
 		</STable>
 	)
 }

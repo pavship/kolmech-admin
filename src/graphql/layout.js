@@ -5,6 +5,7 @@ export const getLayout = gql`
 		layout @client {
 			details
 			extra
+			bottomPanel
 		}
 	}
 `
@@ -18,8 +19,8 @@ export const getLayoutOptions = ({
 })
 
 export const setLayout = gql`
-	mutation SetLayout($details: json, $extra: json) {
-		setLayout(details: $details, extra: $extra) @client {
+	mutation SetLayout($details: json, $extra: json, $bottomPanel: json) {
+		setLayout(details: $details, extra: $extra, bottomPanel: $bottomPanel) @client {
 			result
 		}
 	}

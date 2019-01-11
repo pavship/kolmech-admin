@@ -1,31 +1,40 @@
 import gql from 'graphql-tag'
 
 export const org = gql`
-    query org ($id: ID!) {
-        org (id: $id) {
-            id
-            inn
-            name
-        }
-    }
+	query org ($id: ID!) {
+		org (id: $id) {
+			id
+			inn
+			name
+		}
+	}
 `
 
 export const allOrgs = gql`
-    query allOrgs {
-        orgs {
-            id
-            inn
-            name
-        }
-    }
+	query allOrgs {
+		orgs {
+			id
+			inn
+			name
+		}
+	}
 `
 
 export const createOrg = gql`
-    mutation createOrg($inn: String!) {
-        createOrg(inn: $inn) {
-            id
+	mutation createOrg($inn: String!) {
+		createOrg(inn: $inn) {
+			id
 			inn
-            name
-        }
-    }
+			name
+		}
+	}
+`
+
+export const orgLocal = gql`
+	query OrgLocal ($id: ID!) {
+		orgLocal (id: $id) {
+			id
+			name
+		}
+	}
 `

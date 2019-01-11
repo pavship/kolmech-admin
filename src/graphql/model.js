@@ -8,3 +8,15 @@ export const modelLocal = gql`
 		}
 	}
 `
+
+export const upsertModel = gql`
+	mutation upsertModel(
+		$input: ModelInput!
+	) {
+		upsertModel(
+			input: $input
+		) {
+			id
+		}
+	}
+`

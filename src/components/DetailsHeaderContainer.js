@@ -2,7 +2,7 @@ import React from 'react'
 
 import styled from 'styled-components'
 import { Icon } from 'semantic-ui-react'
-import { Section, Caret } from './styled-semantic/styled-semantic'
+import { Section, Caret } from './styled/styled-semantic'
 
 const SIcon = styled(Icon)`
 	&&& {

@@ -9,6 +9,7 @@ import { isValidDate, toLocalISOString, fromLocalISOString }from '../../utils/da
 
 const PickerDiv = styled.div`
 	display: inline-block;
+	width: 180px;
 	${props => props.err && `
 		input {
 			color: #9f3a38 !important;
@@ -16,40 +17,49 @@ const PickerDiv = styled.div`
 			border-color: #e0b4b4 !important;
 		}`
 	}
+	input {
+		cursor: pointer;
+		vertical-align: unset !important;
+		padding-left: 3.5rem !important;
+		&:focus {
+			cursor: text;
+		}
+	}
 `
 
+// TODO logic may be deprecated (check with enremkol-dev)
 class LocalDatePicker extends Component {
-    handleDayChange = (pickedDate) => {
-        // console.log('pickedDate > ', pickedDate)
-        const { setField, field: { name }} = this.props
-        if (!isValidDate(pickedDate)) {
-            setField(name, {
-                err: {
-                    title: 'Ошибка ввода даты', 
-                    message: 'Дата не соответствует формату ГГГГ-ММ-ДД'
-                }
-            })
-            return
-        }
-        setField(name, {
-            value: toLocalISOString(pickedDate).slice(0, 10)
-        })
-    }
-    render() {
-        const { field: {curVal: value, err} } = this.props
-        return (
-            <PickerDiv err={!!err}>
-                <DayPickerInput
-                    value={value}
-                    onDayChange={this.handleDayChange}
-                    dayPickerProps={{
-                        firstDayOfWeek: 1,
-                        month: fromLocalISOString(value)
-                    }}
-                />
-            </PickerDiv>
-        )
-    }
+	handleDayChange = (pickedDate) => {
+		// console.log('pickedDate > ', pickedDate)
+		const { setField, field: { name }} = this.props
+		if (!isValidDate(pickedDate)) {
+			setField(name, {
+				err: {
+					title: 'Ошибка ввода даты', 
+					message: 'Дата не соответствует формату ГГГГ-ММ-ДД'
+				}
+			})
+			return
+		}
+		setField(name, {
+			value: toLocalISOString(pickedDate).slice(0, 10)
+		})
+	}
+	render() {
+		const { field: {curVal: value, err} } = this.props
+		return (
+			<PickerDiv err={!!err}>
+				<DayPickerInput
+					value={value}
+					onDayChange={this.handleDayChange}
+					dayPickerProps={{
+						firstDayOfWeek: 1,
+						month: fromLocalISOString(value)
+					}}
+				/>
+			</PickerDiv>
+		)
+	}
 }
 
 export default LocalDatePicker

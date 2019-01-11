@@ -2,7 +2,7 @@ import React, { Fragment } from 'react'
 
 import styled from 'styled-components'
 import { Icon } from 'semantic-ui-react'
-import { Section } from '../components/styled-semantic/styled-semantic'
+import { Section } from '../components/styled/styled-semantic'
 
 import { Query } from 'react-apollo'
 import { modelLocal } from '../graphql/model'

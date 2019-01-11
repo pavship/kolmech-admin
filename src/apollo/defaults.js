@@ -15,7 +15,8 @@ const defaults = {
     layout: {
         __typename: 'Layout',
         details: null,
-        extra: null
+        extra: null,
+        bottomPanel: null
     },
     lists: {
         __typename: 'Lists',

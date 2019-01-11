@@ -1,7 +1,7 @@
 import React, { Component, Fragment } from 'react'
 
 import { Form, Button, Message } from 'semantic-ui-react'
-import { Div, Span, A, Label, Section } from './styled-semantic/styled-semantic.js'
+import { Div, Span, A, Label, Section } from './styled/styled-semantic.js'
 
 import { graphql, compose } from 'react-apollo'
 import { orderLocal, upsertOrder } from '../graphql/order'
@@ -159,7 +159,6 @@ export default compose(
 			options: {
 				update: (cache, { data: responseData }) => {
 					const upsertedOrder = responseData.upsertOrder
-					console.log('this > ', this)
 					const query = allEnquiries
 					const data = cache.readQuery({ query })
 					const enquiry = data.enquiries.find(e => e.id === upsertedOrder.enquiry.id)

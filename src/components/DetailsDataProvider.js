@@ -6,6 +6,7 @@ import { orderDetails, orderLocal } from '../graphql/order'
 const DetailsDataProvider = ({
   children,
   type,
+  id,
   query1,
   query2,
   localQuery1,
@@ -19,6 +20,7 @@ const DetailsDataProvider = ({
     : null
   const localQuery = localQuery1 || localQuery2
   const localEntity =
+    id === 'new' ? null :
     type === 'Enquiry' ? localQuery.enquiryLocal :
     type === 'Order' ? localQuery.orderLocal
     : null
@@ -42,16 +44,10 @@ export default compose(
   }),
   graphql(enquiryLocal, {
     name: 'localQuery1',
-    skip: ({ type }) => type !== 'Enquiry',
-    // options: props => ({
-    //   variables: { id: props.id }
-    // })
+    skip: ({ type, id }) => type !== 'Enquiry' || id === 'new',
   }),
   graphql(orderLocal, {
     name: 'localQuery2',
-    skip: ({ type }) => type !== 'Order',
-    // options: props => ({
-    //   variables: { id: props.id }
-    // })
+    skip: ({ type, id }) => type !== 'Order' || id === 'new',
   }),
 )(DetailsDataProvider)

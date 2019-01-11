@@ -3,17 +3,25 @@ import { orderFragmentBasic } from './order'
 import { docFragmentBasic } from './doc'
 import { statusFragment } from './status'
 
+export const enquiryFragmentBasic = gql`
+	fragment EnquiryFragmentBasic on Enquiry {
+		id
+		num
+		dateLocal
+	}
+`
+
 export const allEnquiries = gql`
 	query AllEnquiries {
 		enquiries {
-			id
-			num
-			dateLocal
+			...EnquiryFragmentBasic
 			htmlNote
-			isExpanded @client
 			org {
 				id
 				name
+				employees {
+					id
+				}
 			}
 			model {
 				id
@@ -29,8 +37,10 @@ export const allEnquiries = gql`
 			}
 			status { ...StatusFragment }
 			docs { ...DocFragmentBasic }
+			isExpanded @client
 		}
 	}
+	${enquiryFragmentBasic}
 	${orderFragmentBasic}
 	${docFragmentBasic}
 	${statusFragment}
@@ -38,9 +48,7 @@ export const allEnquiries = gql`
 export const enquiryDetails = gql`
 	query EnquiryDetails ($id: ID!) {
 		enquiry (id: $id) {
-			id
-			num
-			dateLocal
+			...EnquiryFragmentBasic
 			htmlNote
 			org {
 				id
@@ -81,18 +89,18 @@ export const enquiryDetails = gql`
 			}
 		}
 	}
+	${enquiryFragmentBasic}
 	${docFragmentBasic}
 	${statusFragment}
 `
 export const enquiryLocal = gql`
 	query EnquiryLocal ($id: ID!) {
 		enquiryLocal (id: $id) {
-			id
-			num
-			dateLocal
+			...EnquiryFragmentBasic
 			docs { ...DocFragmentBasic }
 		}
 	}
+	${enquiryFragmentBasic}
 	${docFragmentBasic}
 `
 export const newEnquiry = gql`
@@ -116,9 +124,7 @@ export const newEnquiry = gql`
 export const createEnquiry = gql`
 	mutation createEnquiry($dateLocal: String!, $orgId: ID!, $modelId: ID!, $qty: Int!) {
 		createEnquiry(dateLocal: $dateLocal, orgId: $orgId, modelId: $modelId, qty: $qty) {
-			id
-			num
-			dateLocal
+			...EnquiryFragmentBasic
 			htmlNote
 			org {
 				id
@@ -157,15 +163,14 @@ export const createEnquiry = gql`
 			}
 		}
 	}
+	${enquiryFragmentBasic}
 	${docFragmentBasic}
 	${statusFragment}
 `
 export const updateEnquiry = gql`
 	mutation UpdateEnquiry($input: EnquiryInput!) {
 		updateEnquiry(input: $input) {
-			id
-			num
-			dateLocal
+			...EnquiryFragmentBasic
 			htmlNote
 			org {
 				id
@@ -195,6 +200,7 @@ export const updateEnquiry = gql`
 			}
 		}
 	}
+	${enquiryFragmentBasic}
 	${docFragmentBasic}
 	${statusFragment}
 `
@@ -265,16 +271,3 @@ export const enquiryFragment = gql`
 		}
 	}
 `
-
-
-// export const alteredEnquiry = gql`
-//     query AlteredEnquiry($id: ID!) {
-//         alteredEnquiry(id: $id) @client
-//     }
-// `
-
-// export const updateAlteredEnquiry = gql`
-//     mutation UpdateAlteredEnquiry($key: String!, $value: String!) {
-//         updateAlteredEnquiry(key: $key, value: $value) @client
-//     }
-// `

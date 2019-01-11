@@ -3,7 +3,7 @@ import React, { Fragment } from 'react'
 import { Mutation } from 'react-apollo'
 import { reserveProds } from '../graphql/order'
 
-import { Section, Button, Message } from './styled-semantic/styled-semantic'
+import { Section, Button, Message } from './styled/styled-semantic'
 
 import GlobalContext from './special/GlobalContext'
 import CollapsableSection from './CollapsableSection'

@@ -1,7 +1,7 @@
 import React from 'react'
 
 import { Icon } from 'semantic-ui-react'
-import { Button } from '../styled-semantic/styled-semantic'
+import { Button } from '../styled/styled-semantic'
 import styled from 'styled-components'
 
 const SButton = styled(Button)`
