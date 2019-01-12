@@ -1,5 +1,5 @@
 import React from 'react'
-import { Section, Header, Div, Button, Icon } from '../styled/styled-semantic';
+import { Section, Header, Div, Icon } from '../styled/styled-semantic';
 
 export default ({
   title,

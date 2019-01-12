@@ -12,9 +12,6 @@ export default class EmployeeEdit extends Component {
       toggleEditMode,
       refetchQueries
     } = this.props
-    // existing emp
-    const { fName, lName, mName } = emp || {}
-    const fullname = [fName, lName, mName].join(' ')
     return <>
       <DetailsHeader
         title={

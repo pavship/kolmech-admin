@@ -34,8 +34,6 @@ const processEmp = emp =>
     draft.person.fullname = [lName, fName, mName].join(' ')
   })
 
-const processEmps = emps => emps.map(emp => processEmp(emp))
-
 export default ({
   closePanel
 }) => {

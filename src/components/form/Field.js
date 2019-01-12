@@ -1,5 +1,5 @@
 import React, { Fragment } from 'react'
-import { formik, getIn, connect, FieldArray } from 'formik'
+import { getIn, connect, FieldArray } from 'formik'
 import styled from 'styled-components'
 
 import FormikInput from './FormikInput'

@@ -16,7 +16,7 @@ import WrappedDraftEditor from './common/WrappedDraftEditor'
 import { sanitize } from 'dompurify'
 import { currency } from '../utils/format'
 
-import EnquiryEdit from './EnquiryEdit'
+import EnquiryEdit from './Enquiry/Edit'
 import EnquiryCommercialOffer from './EnquiryCommercialOffer'
 
 const SDropdown = styled(Dropdown)`
@@ -27,15 +27,6 @@ const SDropdown = styled(Dropdown)`
 		background: none !important;
 	}
 `
-
-// const DarkGreenButton = styled(Button)`
-// 	&&&& {
-// 		color: #178230 !important;
-// 		&:hover {
-// 			color: #0c5a1e !important;
-// 		}
-// 	}
-// `
 
 const Comments = styled(Comment.Group)`
 	margin: 1.5em 1.5em 1.5em 55px !important;

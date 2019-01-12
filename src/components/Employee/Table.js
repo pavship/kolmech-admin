@@ -42,7 +42,7 @@ export default ({
                       : 'Персональные данные удалены'
                   },{
                     name: 'tel',
-                    value: tels && tels.length && formatTel(tels[0]) || ''
+                    value: (tels && tels.length && formatTel(tels[0])) || ''
                   }
                   // ,{
                   //   name: 'emps',

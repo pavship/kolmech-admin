@@ -1,4 +1,4 @@
-import { object, lazy, string } from 'yup'
+import { object } from 'yup'
 
 import { validationSchema as personValidationSchema } from './person'
 import { idValidationType } from './commonTypes'

@@ -6,10 +6,9 @@ import { orgLocal } from '../../graphql/org'
 
 import styled from 'styled-components'
 import { Icon } from 'semantic-ui-react'
-import { Header, Button, Span } from '../styled/styled-semantic'
+import { Header, Button } from '../styled/styled-semantic'
 
 import GlobalContext from '../special/GlobalContext'
-import EnquiriesSubmenu from '../EnquiriesSubmenu'
 
 const MenuDiv = styled.div`
 	display: flex;

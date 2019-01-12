@@ -48,7 +48,8 @@ export default class EmployeeForm extends Component {
               // console.log('initialValues > ', initialValues)
               const input = preparePayload(values, initialValues, schema)
               // console.log('upsertEmployee input > ', input)
-              const upserted = await upsertEmployee({ variables: { input } })
+              await upsertEmployee({ variables: { input } })
+              // const upserted = await upsertEmployee({ variables: { input } })
               // console.log('upserted > ', upserted)
               return emp
                 ? toggleEditMode()

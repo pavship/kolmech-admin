@@ -30,7 +30,7 @@ export class EnquiriesPage extends Component {
 	}
 	render() {
 		const {
-			allEnquiries: { loading, error, refetch, networkStatus, enquiries },
+			allEnquiries: { loading, error, refetch, enquiries },
 			refreshToken
 		} = this.props
 		const { panelClosing } = this.state

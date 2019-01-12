@@ -1,26 +1,20 @@
 import React, { Component, Fragment } from 'react'
 
 import cloneDeep from 'lodash/cloneDeep'
-import validateInn from '../utils/validateInn'
-import { isValidDate, toLocalISOString, fromLocalISOString }from '../utils/dates'
+import validateInn from '../../utils/validateInn'
+import { isValidDate, toLocalISOString, fromLocalISOString }from '../../utils/dates'
 
 import { graphql, compose } from 'react-apollo'
-import { allEnquiries, createEnquiry, updateEnquiry } from '../graphql/enquiry'
-import { createOrg } from '../graphql/org'
-import { allOrgsAndModels } from '../graphql/combinedQueries'
+import { allEnquiries, createEnquiry, updateEnquiry } from '../../graphql/enquiry'
+import { createOrg } from '../../graphql/org'
+import { allOrgsAndModels } from '../../graphql/combinedQueries'
 
 import styled from 'styled-components'
 import { Form, Input, Message, Dropdown as SDropdown } from 'semantic-ui-react'
-import { Div, Span, A, Label, Button, Section } from './styled/styled-semantic.js'
-import DatePicker from './common/DatePicker'
-import SecondarySection from './presentational/SecondarySection'
-import ModelForm from './Model/Form'
-
-const FormField = styled(Form.Field)`
-	&&&&&& {
-		${props => !props.visible ? 'display: none;' : ''}
-	}
-`
+import { Div, Span, A, Label, Button, Section } from '../styled/styled-semantic.js'
+import DatePicker from '../common/DatePicker'
+import SecondarySection from '../presentational/SecondarySection'
+import ModelForm from '../Model/Form'
 
 const Dropdown = styled(SDropdown)`
 	&&&&&& {
@@ -51,7 +45,7 @@ class EnquiryEdit extends Component {
 				search: '',
 				loading: false
 			},
-			newModelSectionVisible: false
+			newModelMode: false
 		}
 		// gather form fields on oriEnquiry object
 		const oriEnquiry = cloneDeep(props.enquiry)
@@ -83,7 +77,7 @@ class EnquiryEdit extends Component {
 		if (!isNewEnquiry) this.state.diff = false
 		// console.log(this.state)
 	}
-	closeNewModelSection = () => this.setState({ newModelSectionVisible: false })
+	closeNewModelSection = () => this.setState({ newModelMode: false })
 	changeFieldValue = (field, newVal) => {
 		console.log('change ', field, ' to value > ', newVal)
 		const fieldObj = cloneDeep(this.state[field])
@@ -214,7 +208,7 @@ class EnquiryEdit extends Component {
 		this.componentIsMounted = false
 	}
 	render() {
-		const { dateLocal, orgId, orgDdn, modelId, modelDdn, qty, diff, loading, err, newModelSectionVisible } = this.state
+		const { dateLocal, orgId, orgDdn, modelId, modelDdn, qty, diff, loading, err, newModelMode } = this.state
 		const { id, setDetails, allOrgsAndModels } = this.props
 		const selectedDate = fromLocalISOString(dateLocal.curVal)
 		const orgs = allOrgsAndModels.orgs
@@ -255,49 +249,48 @@ class EnquiryEdit extends Component {
 										onAddItem={this.createOrg}
 									/>
 								</Form.Field>
-								<FormField
-									inline
-									required
-									visible={!newModelSectionVisible}
-									error={modelId.err}
-								>
-									<Label>Изделие</Label>
-									<Dropdown
-										loading={!models || modelDdn.loading}
-										disabled={!models || modelDdn.loading}
-										selection //render as a formControl
-										placeholder='Поиск по наименованию или артикулу'
-										options={ models ? models.map(m => ({key:m.id, value: m.id, text: m.name})) : [] }
-										value={modelId.curVal}
-										onChange={this.selectModel}
-										selectOnBlur={false}
-										selectOnNavigation={false}
-										search
-										searchQuery={modelDdn.search}
-										onSearchChange={this.handleModelDropdownSearchChange}
-										noResultsMessage='Если не найдено, выберите "Нет в списке"'
-									/>
-									<Button
-										ml='5px'
-										icon='plus'
-										activeColor='green'
-										active={newModelSectionVisible}
-										onClick={() => this.setState({ newModelSectionVisible: true })}
-									/>
-								</FormField>
-								{newModelSectionVisible &&
-									<SecondarySection
-										title='Новое изделие'
-										onClose={this.closeNewModelSection}
-										content={
-											<ModelForm
-												model={undefined}
-												orgId={orgId.curVal || undefined}
-												refetchQueries={allOrgsAndModels.refetch}
-												onSubmit={this.submitNewModel}
+								{!newModelMode
+									? <Form.Field
+											inline
+											required
+											error={modelId.err}
+										>
+											<Label>Изделие</Label>
+											<Dropdown
+												loading={!models || modelDdn.loading}
+												disabled={!models || modelDdn.loading}
+												selection //render as a formControl
+												placeholder='Поиск по наименованию или артикулу'
+												options={ models ? models.map(m => ({key:m.id, value: m.id, text: m.name})) : [] }
+												value={modelId.curVal}
+												onChange={this.selectModel}
+												selectOnBlur={false}
+												selectOnNavigation={false}
+												search
+												searchQuery={modelDdn.search}
+												onSearchChange={this.handleModelDropdownSearchChange}
+												noResultsMessage='Если не найдено, выберите "Нет в списке"'
 											/>
-										}
-									/>
+											<Button
+												ml='5px'
+												icon='plus'
+												activeColor='green'
+												active={newModelMode}
+												onClick={() => this.setState({ newModelMode: true })}
+											/>
+										</Form.Field>
+									: <SecondarySection
+											title='Новое изделие'
+											onClose={this.closeNewModelSection}
+											content={
+												<ModelForm
+													model={undefined}
+													orgId={orgId.curVal || undefined}
+													refetchQueries={allOrgsAndModels.refetch}
+													onSubmit={this.submitNewModel}
+												/>
+											}
+										/>
 								}
 								<Form.Field inline required>
 									<Label>Кол-во</Label>
