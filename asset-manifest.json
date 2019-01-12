@@ -1,14 +1,14 @@
 {
-  "main.js": "/kolmech-admin/static/js/main.0f819231.chunk.js",
-  "main.js.map": "/kolmech-admin/static/js/main.0f819231.chunk.js.map",
+  "main.js": "/kolmech-admin/static/js/main.280c81aa.chunk.js",
+  "main.js.map": "/kolmech-admin/static/js/main.280c81aa.chunk.js.map",
   "static/css/1.29a676ab.chunk.css": "/kolmech-admin/static/css/1.29a676ab.chunk.css",
-  "static/js/1.5250ab04.chunk.js": "/kolmech-admin/static/js/1.5250ab04.chunk.js",
-  "static/js/1.5250ab04.chunk.js.map": "/kolmech-admin/static/js/1.5250ab04.chunk.js.map",
+  "static/js/1.9b5c6de2.chunk.js": "/kolmech-admin/static/js/1.9b5c6de2.chunk.js",
+  "static/js/1.9b5c6de2.chunk.js.map": "/kolmech-admin/static/js/1.9b5c6de2.chunk.js.map",
   "runtime~main.js": "/kolmech-admin/static/js/runtime~main.f3933ef1.js",
   "runtime~main.js.map": "/kolmech-admin/static/js/runtime~main.f3933ef1.js.map",
-  "static/media/semantic.min.css": "/kolmech-admin/static/media/brand-icons.a1a749e8.svg",
+  "static/media/semantic.min.css": "/kolmech-admin/static/media/flags.9c74e172.png",
   "static/css/1.29a676ab.chunk.css.map": "/kolmech-admin/static/css/1.29a676ab.chunk.css.map",
   "index.html": "/kolmech-admin/index.html",
-  "precache-manifest.ec8f284834046aa757dcc966e4efb09f.js": "/kolmech-admin/precache-manifest.ec8f284834046aa757dcc966e4efb09f.js",
+  "precache-manifest.0a882148b1857944833b0833072f2ba2.js": "/kolmech-admin/precache-manifest.0a882148b1857944833b0833072f2ba2.js",
   "service-worker.js": "/kolmech-admin/service-worker.js"
 }
