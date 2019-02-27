@@ -3,7 +3,7 @@ import gql from 'graphql-tag'
 export const orderFragmentBasic = gql`
 	fragment OrderFragmentBasic on Order {
 		id
-		num
+		fullnum
 		dateLocal
 		qty
 		amount
@@ -69,6 +69,9 @@ export const upsertOrder = gql`
 			enquiry {
 				id
 			}
+			prods {
+				id
+			}
 		}
 	}
 	${orderFragmentBasic}
@@ -77,7 +80,7 @@ export const orderLocal = gql`
 	query OrderLocal ($id: ID!) {
 		orderLocal (id: $id) {
 			id
-			num
+			fullnum
 			dateLocal
 			qty
 			amount

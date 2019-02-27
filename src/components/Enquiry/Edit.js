@@ -232,7 +232,7 @@ class EnquiryEdit extends Component {
 									<Label>Организация</Label>
 									<Dropdown
 										loading={!orgs || orgDdn.loading}
-										disabled={!orgs || orgDdn.loading}
+										disabled={id !== 'new' || !orgs || orgDdn.loading} //org cannot be changed when editing existing enquiry
 										selection //render as a formControl
 										placeholder='Поиск по наименованию или ИНН'
 										options={ orgs ? orgs.map(o => ({key:o.id, value: o.id, text: o.name})) : [] }

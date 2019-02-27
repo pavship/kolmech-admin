@@ -1,68 +1,88 @@
 import React, { Component } from 'react'
 import { connect, getIn } from 'formik'
-import { Form } from 'semantic-ui-react'
-import { Label, Input } from '../styled/styled-semantic';
 import InputMask from 'react-input-mask'
+import styled from 'styled-components'
+import { Dropdown as SDropdown } from 'semantic-ui-react';
+import { Input } from '../styled/styled-semantic';
 import FormikInput from './FormikInput.js';
 
-class FormikTelField extends Component {
-  // state = {
-  //   value: this.props.field.curVal || '',
-  // }
-  // debouncedSetField = debounce(value => {
-  //   const { field: { name }, setField } = this.props
-  //   setField(name, { value })
-  // }, 250)
-  // handleInputChange = ({ target: { value } }) => {
-  //   this.setState({ value })
-	// 	this.debouncedSetField(value)
-  // }
+const countryOtions = [
+  { key: 'rus', text: '+7', value: 'rus' },
+  { key: 'notRus', text: '+', value: 'notRus' },
+]
+
+const DropdownPropFilter = ({ inputError, ...rest }) => (
+	<SDropdown {...rest} />
+)
+export const Dropdown = styled(DropdownPropFilter)`
+	&&&&&& {
+    ${props => props.inputError && `
+      border: 1px solid ${props.theme.colors.errorBorder};
+      border-right-color: transparent;
+    `}
+	}
+`
+
+const Error = styled.div`
+  color: ${props => props.theme.colors.error};
+`
+
+class Tel extends Component {
   render() {
     const {
-      name,
+      baseName,
       formik,
-      label,
-      required,
-      inputLabel,
-      country,
       ...rest
     } = this.props
-    return (
-      <Form.Field
-        inline
-        error={!!getIn(formik.errors, name)}
-        required={required}
-      >
-        <Label>{label || 'Телефон'}</Label>
-        {country === 'rus'
-          ? <InputMask
-              name={name}
-              mask='( 999 ) 999-99-99'
-              maskChar=''
-              value={getIn(formik.values, name)}
-              onChange={formik.handleChange}
-            >
-              {(inputProps) =>
-                <Input
-                  w='270px !important'
-                  // placeholder='Номер телефона'
-                  label={inputLabel}
-                  {...rest}
-                  {...inputProps}
-                />
-              }
-            </InputMask>
-          : <FormikInput
-              w='270px !important'
-              name={name}
-              // placeholder='Телефон с кодом страны'
-              label={inputLabel}
-              {...rest}
-            />
-        }
-      </Form.Field>
+    const number = getIn(formik.values, baseName + '.number')
+    const country = getIn(formik.values, baseName + '.country')
+    const touched = getIn(formik.touched, baseName + '.number')
+    const error = getIn(formik.errors, baseName)
+    const renderDropdown =() => (
+      <Dropdown
+        tabIndex={-1}
+        name={baseName + '.country'}
+        value={country}
+        options={countryOtions}
+        inputError={touched && !!error}
+        onChange={(e, { name, value }) => formik.setFieldValue( name, value )}
+      />
     )
+    return <>
+      {country === 'rus'
+        ? <InputMask
+            name={baseName + '.number'}
+            mask='( 999 ) 999-99-99'
+            maskChar=''
+            value={number}
+            onBlur={formik.handleBlur}
+            onChange={formik.handleChange}
+          >
+            {(inputProps) =>
+              <Input
+                w='240px !important'
+                // placeholder='Номер телефона'
+                error={touched && !!error}
+                label={renderDropdown()}
+                {...rest}
+                {...inputProps}
+              />
+            }
+          </InputMask>
+        : <FormikInput
+            w='240px !important'
+            name={baseName + '.number'}
+            error={touched && !!error}
+            // placeholder='Телефон с кодом страны'
+            label={renderDropdown()}
+            {...rest}
+          />
+      }
+      <Error>
+        {touched && error && error.number}
+      </Error>
+    </>
   }
 }
 
-export default connect(FormikTelField)
+export default connect(Tel)

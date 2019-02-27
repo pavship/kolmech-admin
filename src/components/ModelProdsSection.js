@@ -16,7 +16,6 @@ import ProdContext from './special/ProdContext'
 const ModelProdsSection = ({
   order: { id, model, qty, prods }
 }) => {
-  console.log('id, model, qty, prods > ', id, model, qty, prods)
   return (
     <GlobalContext>
       {({ extra, setExtra, selectedProdIds }) => (

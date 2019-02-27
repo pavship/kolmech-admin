@@ -1,6 +1,7 @@
 import React, { Component, Fragment } from 'react'
 
 import styled from 'styled-components'
+// TODO use List instead of entity-table
 import { Table, Tr, Td, InputTd, EditorTd } from './styled/entity-table'
 import { Header as SHeader, Icon, Label, Form, Comment, 
 	Message, Dropdown } from 'semantic-ui-react'

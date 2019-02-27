@@ -13,7 +13,7 @@ export const orgEmployees = gql`
 `
 
 export const upsertEmployee = gql`
-	mutation upsertEmployee(
+	mutation UpsertEmployee(
 		$input: EmployeeInput!
 	) {
 		upsertEmployee(

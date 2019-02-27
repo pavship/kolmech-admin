@@ -15,6 +15,10 @@ const settings = {
 	Order: {
 		titleNew: 'Новый заказ',
 		titleExisting: 'Заказ №',
+	},
+	Model: {
+		titleNew: 'Новое изделие',
+		titleExisting: '',
 	}
 }
 
@@ -27,7 +31,7 @@ const DetailsMainHeader = ({
 	editMode,
 	localEntity
 }) => {
-	const { id, num, dateLocal } = localEntity || {}
+	const { id, num, fullnum, name, article, dateLocal } = localEntity || {}
 	return (
 		<DetailsHeaderContainer
 			close={closeDetails}
@@ -40,8 +44,14 @@ const DetailsMainHeader = ({
 			{ id && // existing entity
 				<Fragment>
 					<DetailsHeaderTitle
-						title={settings[type].titleExisting + num}
-						subtitle={'от ' + dateLocal}
+						title={type === 'Model'
+							? name
+							: settings[type].titleExisting + ' ' + (num || fullnum)
+						}
+						subtitle={type === 'Model'
+							? (article ? `Артикул: ${article}` : '')
+							: 'от ' + dateLocal
+						}
 					/>
 					<DetailsHeaderButtons>
 						<RefreshButton

@@ -15,6 +15,9 @@ const Row = styled.tr`
 		background: rgba(0,0,0,.05);
 		color: rgba(0,0,0,.95);
 	}
+	${props => props.lineHeight && `
+		line-height: ${props.lineHeight};
+	`}
 	${props => props.secondary && `
 		background: rgba(0,0,50,.02);
 		${!props.lastSecondaryRow ? 'border-bottom: none;' : ''}
@@ -32,6 +35,7 @@ const Row = styled.tr`
 
 const tdActiveStyle = `
 	background: rgba(0,0,0,.12);
+	opacity: 1 !important;
 	.icon {
 		opacity: 1 !important;
 	}
@@ -44,35 +48,43 @@ const Td = styled.td`
   text-overflow: ellipsis;
 	${props => props.service && `padding-left: 3px;`}
 	${Row}:not(:hover) & {
-		${props => props.type === 'onHover' && !props.active && `
+		${props => props.hoverable
+			&& props.hideUnhovered
+			&& !props.active
+			&& !props.hasEntries && `
 			opacity: 0 !important;
 		`}
 	}
-	${props => props.type === 'onHover' && `
-		padding-left: 5px;
+	${props => props.color && `color: ${props.color};`}
+	${props => props.hoverable && `
 		transition: background .3s ease;
+		${props.hideUnhovered && `
+			opacity: 0.8;
+			padding-left: ${props.hasEntries ? '5px' : '7.5px'};
+		`};
 		:hover {
 			${tdActiveStyle}
 		}
 		${props.active ? tdActiveStyle : ''}
 	`}
-	${props => props.styles && props.styles.includes('center') && `
-		text-align: center;
-	`}
 `
 
-const TableRow = ({
-	tableFields,
-	rowFields = [],
-	entity,
-	expandFor,
-	expanded,
-	expand,
-	select,
-	...rest 
-}) => {
-	// rowFields have precedence over tableFields
-	const fields = tableFields.map(f => rowFields.find(rf => rf.name === f.name) || f)
+const TableRow = props => {
+	const {
+		tableFields,
+		rowFields = [],
+		entity,
+		expandFor,
+		expanded,
+		expand,
+		select,
+		...rest 
+	} = props
+	// rowFields are merged into tableFields
+	const fields = tableFields.map(f => {
+		const rowField = rowFields.find(rf => rf.name === f.name)
+		return rowField ? { ...f, ...rowField } : f
+	})
 	const { selected, disabled } = entity
 	return (
 		<Row
@@ -121,6 +133,7 @@ const TableRow = ({
 					</Td>
 				)
 				const {
+					component,
 					content,
 					name,
 					value,
@@ -130,11 +143,21 @@ const TableRow = ({
 					iconColor,
 					...rest
 				} = f
-				if (content) return (
+				if (component || content) return (
 					<Td
 						key={name}
+						{...rest}
+						onClick={
+							!!onClick
+							? e => {
+									e.stopPropagation()
+									onClick()
+								}
+							: undefined
+						}
 					>
-						{content}
+						{component ? props[component] : null}
+						{content ? content : null}
 					</Td>
 				)
 				let val = value || (path ? getObjProp(entity, path) : null)

@@ -17,6 +17,7 @@ const TableHeaderRow = styled.tr`
 	line-height: 1.5em;
 	background: rgb(233, 234, 235);
 	border-top: 1px solid #d4d4d5;
+	/* ${props => props.noTopBorder ? '' : 'border-top: 1px solid #d4d4d5;'} */
 	border-bottom: 1px solid #d4d4d5;
 	font-weight: bold;
 `
@@ -36,6 +37,7 @@ const Table = ({
 	children,
 	fields,
 	indent,
+	noTopBorder,
 	select,
 	expand
 }) => {
@@ -64,7 +66,9 @@ const Table = ({
 	return (
 		<STable>
 				<thead>
-					<TableHeaderRow>
+					<TableHeaderRow
+						className='fz-tableHeaderRow'
+					>
 						{fieldsExtended.map(f =>{
 							// console.log(f)
 							return <Td

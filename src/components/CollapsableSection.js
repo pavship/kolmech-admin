@@ -1,12 +1,14 @@
 import React, { Component } from 'react'
 
 import styled from 'styled-components'
-import { Section } from './styled/styled-semantic'
+import { Section, Div } from './styled/styled-semantic';
 
 import DetailsHeader from './DetailsHeader'
+import posed, { PoseGroup } from 'react-pose'
 
 const OuterSection = styled(Section)`
-  & { 
+  & {
+    width: 100%;
     padding: 0;
     ${props => props.expanded && `{
       margin-top: -1px;
@@ -14,8 +16,14 @@ const OuterSection = styled(Section)`
     }`}
   }
 `
-const InnerSection = styled(Section)`
+
+const InnerSection = styled(posed(Section)({
+  enter: { y: 0 },
+  exit: { y: '-100%' },
+}))`
   & {
+    z-index: -1;
+    width: 100%;
     padding: 0;
     margin-bottom: -1px;
   }
@@ -23,15 +31,18 @@ const InnerSection = styled(Section)`
 
 class CollapsableSection extends Component {
   state = {
-    expanded: false
+    expanded: !!this.props.initiallyExpanded
   }
+  expand = () => this.setState({ expanded: true })
   render() {
     const {
+
       children,
+      disabled,
       forceExpanded,
       ...headerProps
     } = this.props
-    const expanded = this.state.expanded || forceExpanded
+    const expanded = !disabled && (forceExpanded || this.state.expanded)
     return (
       <OuterSection
         expanded={expanded ? 1 : 0}
@@ -49,11 +60,19 @@ class CollapsableSection extends Component {
             && (() => this.setState({ expanded: !this.state.expanded }))
           }
         />
-        {expanded &&
-          <InnerSection>
-            {children}
-          </InnerSection>
-        }
+        <Div
+          oy='hidden'
+        >
+          <PoseGroup>
+            {expanded &&
+              <InnerSection
+                key={1}
+              >
+                {children}
+              </InnerSection>
+            }
+          </PoseGroup>
+        </Div>
       </OuterSection>
     )
   }

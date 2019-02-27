@@ -1,18 +1,19 @@
 import { getLayout } from '../graphql/layout'
 import { allEnquiries } from '../graphql/enquiry'
 import { getLists } from '../graphql/lists'
+import { cloneDeep } from 'apollo-utilities'
 
 const resolvers = {
 	Enquiry: {
 		isExpanded: () => false
 	},
 	Mutation: {
-		setLayout: (_, input, { cache }) => {
+		setLayout: (_, { input }, { cache }) => {
 			const query = getLayout
 			const data = cache.readQuery({ query })
 			data.layout = {
 				...data.layout,
-				...input
+				...cloneDeep(input)
 			}
 			cache.writeQuery({ query, data })
 			return null

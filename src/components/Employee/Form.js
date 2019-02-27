@@ -47,7 +47,7 @@ export default class EmployeeForm extends Component {
               // console.log('values > ', values)
               // console.log('initialValues > ', initialValues)
               const input = preparePayload(values, initialValues, schema)
-              // console.log('upsertEmployee input > ', input)
+              // console.log('input > ', input)
               await upsertEmployee({ variables: { input } })
               // const upserted = await upsertEmployee({ variables: { input } })
               // console.log('upserted > ', upserted)

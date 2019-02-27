@@ -1,3 +1,4 @@
+// not used
 export default `
 	type Details {
 		type: String

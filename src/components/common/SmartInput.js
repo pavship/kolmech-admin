@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import React, { Component, createRef } from 'react'
 import debounce from 'lodash/debounce'
 import { Input } from '../styled/styled-semantic'
 import { isNaN } from '../../utils/format'
@@ -9,6 +9,7 @@ class SmartInput extends Component {
 	state = {
 		value: this.props.field.curVal || ''
 	}
+	input = createRef()
 	debouncedSetField = debounce(value => {
     const { field: { name }, setField } = this.props
     setField(name, { value })
@@ -32,9 +33,8 @@ class SmartInput extends Component {
 	// so I check valueAsNumber html input attr onBlur and set error
 	onBlur = () => {
 		const { field: { name }, setField } = this.props
-		const { type, valueAsNumber } = this.input.inputRef
+		const { type, valueAsNumber } = this.input.current.children[0] || {}
 		if (type === 'number' && isNaN(valueAsNumber)) {
-			// this.input.inputRef.value = ''
 			setField(name, { err: {
 				title: 'Ошибка в поле "Количество"',
 				message: 'Недопустимое значение'
@@ -47,11 +47,11 @@ class SmartInput extends Component {
 		return (
 			<Input
 				{...rest}
-				type={type === 'int' ? 'number' : type}
+				type={type === 'int' ? 'number' : (type || 'text')}
 				value={value}
 				onChange={this.handleInputChange}
 				onBlur={this.onBlur}
-				ref={input => this.input = input}
+				ref={this.input}
 			/>
 		)
 	}

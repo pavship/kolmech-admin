@@ -2,6 +2,7 @@ import gql from 'graphql-tag'
 import { orderFragmentBasic } from './order'
 import { docFragmentBasic } from './doc'
 import { statusFragment } from './status'
+import { modelFragmentWithDrawings, modelFragmentBasic } from './model';
 
 export const enquiryFragmentBasic = gql`
 	fragment EnquiryFragmentBasic on Enquiry {
@@ -23,11 +24,7 @@ export const allEnquiries = gql`
 					id
 				}
 			}
-			model {
-				id
-				article
-				name
-			}
+			model { ...ModelFragmentWithDrawings }
 			qty
 			orders {
 				...OrderFragmentBasic
@@ -41,6 +38,7 @@ export const allEnquiries = gql`
 		}
 	}
 	${enquiryFragmentBasic}
+	${modelFragmentWithDrawings}
 	${orderFragmentBasic}
 	${docFragmentBasic}
 	${statusFragment}
@@ -54,11 +52,7 @@ export const enquiryDetails = gql`
 				id
 				name
 			}
-			model {
-				id
-				article
-				name
-			}
+			model { ...ModelFragmentBasic }
 			qty
 			events {
 				id
@@ -90,6 +84,7 @@ export const enquiryDetails = gql`
 		}
 	}
 	${enquiryFragmentBasic}
+	${modelFragmentBasic}
 	${docFragmentBasic}
 	${statusFragment}
 `
@@ -130,11 +125,7 @@ export const createEnquiry = gql`
 				id
 				name
 			}
-			model {
-				id
-				article
-				name
-			}
+			model { ...ModelFragmentWithDrawings }
 			qty
 			status { ...StatusFragment }
 			docs { ...DocFragmentBasic }
@@ -156,7 +147,7 @@ export const createEnquiry = gql`
 			}
 			orders {
 				id
-				num
+				fullnum
 				dateLocal
 				qty
 				amount
@@ -164,6 +155,7 @@ export const createEnquiry = gql`
 		}
 	}
 	${enquiryFragmentBasic}
+	${modelFragmentWithDrawings}
 	${docFragmentBasic}
 	${statusFragment}
 `
@@ -176,11 +168,7 @@ export const updateEnquiry = gql`
 				id
 				name
 			}
-			model {
-				id
-				article
-				name
-			}
+			model { ...ModelFragmentWithDrawings }
 			qty
 			events {
 				id
@@ -201,6 +189,7 @@ export const updateEnquiry = gql`
 		}
 	}
 	${enquiryFragmentBasic}
+	${modelFragmentWithDrawings}
 	${docFragmentBasic}
 	${statusFragment}
 `
@@ -239,11 +228,7 @@ export const enquiryFragment = gql`
 			id
 			name
 		}
-		model {
-			id
-			article
-			name
-		}
+		model { ...ModelFragmentBasic }
 		qty
 		events {
 			id
@@ -270,4 +255,5 @@ export const enquiryFragment = gql`
 			}
 		}
 	}
+	${modelFragmentBasic}
 `

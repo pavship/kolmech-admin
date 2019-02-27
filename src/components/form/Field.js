@@ -3,7 +3,7 @@ import { getIn, connect, FieldArray } from 'formik'
 import styled from 'styled-components'
 
 import FormikInput from './FormikInput'
-import Tel from './Tel'
+import FormikTel from './FormikTel'
 
 const Container = styled.div`
   display: flex;
@@ -42,22 +42,23 @@ const Error = styled.div`
 `
 
 const Field = ({
+  label,
+  required,
   name,
   type,
   formik,
-  label,
-  required,
   inputLabel,
   ...rest
 }) => {
   const isArray = name === 'person.tels'
   // const component = data =>
   //   type === 'string' ? data :
-  //   type === 'tel' ? <Tel tel={data} />
+  //   type === 'tel' ? <FormikTel tel={data} />
   //   : null
   return (
     <Container>
       <Label
+        className='fz-formFieldLabel'
         required={required}
       >
         {label}
@@ -72,7 +73,7 @@ const Field = ({
                     <Fragment
                       key={i}
                     >
-                      <Tel
+                      <FormikTel
                         baseName={`${name}.${i}`}
                       />
                     </Fragment>
@@ -93,15 +94,6 @@ const Field = ({
               </Error>
             </>
         }
-        
-        {/* {Array.isArray(content)
-          ? content.map((item, i) => 
-              <Fragment key={i}>
-                {component(item)}
-              </Fragment>
-            )
-          : component(content)
-        } */}
       </Content>
     </Container>
   )

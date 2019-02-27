@@ -5,8 +5,7 @@ import { Query } from 'react-apollo'
 import { orgLocal } from '../../graphql/org'
 
 import styled from 'styled-components'
-import { Icon } from 'semantic-ui-react'
-import { Header, Button } from '../styled/styled-semantic'
+import { Header, Button, Icon } from '../styled/styled-semantic'
 
 import GlobalContext from '../special/GlobalContext'
 
@@ -18,13 +17,6 @@ const MenuDiv = styled.div`
 	border-top: 1px solid rgb(160, 161, 162);
 `
 
-const ClosePanelIcon =  styled(Icon)`
-	&&& {
-		margin-left: auto;
-		margin-right: 8px;
-	}
-`
-
 export default ({
 	closePanel
 }) => {
@@ -32,6 +24,14 @@ export default ({
 		<GlobalContext>
 			{({ bottomPanel, setBottomPanel }) =>
 				<MenuDiv>
+					<Icon
+						w='30px'
+						m='0 10px'
+						link
+						name='cancel'
+						size='large'
+						onClick={closePanel}
+					/>
 					<Query
 						query={orgLocal}
 						variables={{id: bottomPanel.orgId}}
@@ -39,6 +39,7 @@ export default ({
 						{({ data }) => {
 							if (data && data.orgLocal) return (
 								<Header inline
+									pl='0 !important'
 									size='medium'
 									content={`Представители \u00A0 ${data.orgLocal.name}`}
 								/>
@@ -55,12 +56,7 @@ export default ({
 							produce(bottomPanel, draft => { delete draft.id })
 						)}
 					/>
-					<ClosePanelIcon 
-						link
-						name='cancel'
-						size='large'
-						onClick={closePanel}
-					/>
+					
 				</MenuDiv>
 			}
 		</GlobalContext>

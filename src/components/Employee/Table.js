@@ -23,7 +23,8 @@ export default ({
     <GlobalContext>
 			{({ bottomPanel, setBottomPanel }) =>
 				<Table
-					fields={fields}
+          fields={fields}
+          indent='27px'
 				>
 					{({ tableFields }) => 
 						emps.map(emp => {

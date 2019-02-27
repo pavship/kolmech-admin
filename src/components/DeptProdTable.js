@@ -151,7 +151,7 @@ const DeptProdTable = ({
 												},
 												{
 													name: 'reserve',
-													value: order && order.enquiry.num + '-' + order.num,
+													value: order && order.fullnum,
 												}
 											]}
 											// active={}

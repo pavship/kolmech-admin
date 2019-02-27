@@ -36,6 +36,7 @@ const DetailsHeaderContainer = ({
 	}
 	return (
 		<Section
+			bc='white'
 			head
 			noLP
 			noIndent={noIndent}

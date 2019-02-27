@@ -4,6 +4,7 @@ import GlobalContext from './special/GlobalContext'
 
 import Table from './common/Table'
 import TableRow from './common/TableRow'
+import { Div, Icon } from './styled/styled-semantic'
 
 const fields = [{
 	name: 'num',
@@ -52,19 +53,20 @@ const fields = [{
 const EnquiriesTable = ({ enquiries }) => {
 	return (
 		<GlobalContext>
-			{({ details, setDetails, bottomPanel, setBottomPanel, setExpanded }) =>
+			{({ details,extra, setDetails, bottomPanel, setBottomPanel, setExpanded }) =>
 				<Table
 					fields={fields}
 				>
 					{({ tableFields }) => 
 						enquiries.map(enquiry => {
-							const { id, org, docs, isExpanded } = enquiry
+							const { id, org, docs, isExpanded, model, orders } = enquiry
 							const active = details
 								&& details.type === 'Enquiry'
 								&& id === details.id
 							return (
 								<Fragment key={id} >
 									<TableRow
+										lineHeight='21px'
 										entity={enquiry}
 										tableFields={tableFields}
 										rowFields={[{
@@ -74,8 +76,9 @@ const EnquiriesTable = ({ enquiries }) => {
 											name: 'emps',
 											icon: org.employees.length ? 'user' : 'user plus',
 											iconColor: 'grey',
-											type: 'onHover',
-											styles: ['center'],
+											hoverable: true,
+											hideUnhovered: true,
+											hasEntries: !!org.employees.length,
 											value: org.employees.length || ' ',
 											onClick: () => {
 												setBottomPanel({
@@ -86,6 +89,22 @@ const EnquiriesTable = ({ enquiries }) => {
 											active: bottomPanel
 												&& bottomPanel.type === 'Employees'
 												&& bottomPanel.orgId === org.id
+										},{
+											name: 'model',
+											component: 'modelComponent',
+											hoverable: true,
+											onClick: () => {
+												setDetails({
+													type: 'Model',
+													id: model.id
+												})
+											},
+											active: details
+												&& details.type === 'Model'
+												&& details.id === model.id
+										},{
+											name: 'reserved',
+											value: orders.reduce((res, o) => res += o.prods.length, 0),
 										}]}
 										expandFor='orders'
 										expanded={isExpanded}
@@ -106,21 +125,41 @@ const EnquiriesTable = ({ enquiries }) => {
 												value: !active ? true : !isExpanded
 											})
 										}}
+										modelComponent={
+											<Div
+												d='flex'
+											>
+												<Div
+													minw='215px'
+												>
+													{model.name}
+												</Div>
+												{!!model.drawings.length &&
+													<Icon
+														mr='5px'
+														o='.6'
+														name='image outline'
+														color='grey'
+														size='large'
+													/>
+												}
+											</Div>
+										}
 									>
 									</TableRow>
-									{	isExpanded && enquiry.orders.map((order, i) => {
-										const { id, num, prods } = order
+									{	isExpanded && orders.map((order, i) => {
+										const { id, prods } = order
 										return (
 											// @ts-ignore
 											<TableRow
+												key={id}
 												secondary={1}
 												lastSecondaryRow={i === enquiry.orders.length - 1 ? 1 : 0}
-												key={id}
 												entity={order}
 												tableFields={tableFields}
 												rowFields={[{
 													name: 'num',
-													value: enquiry.num + '-' + num
+													path: 'fullnum'
 												},{
 													name: 'org',
 													value: enquiry.org.name
@@ -154,7 +193,6 @@ const EnquiriesTable = ({ enquiries }) => {
 						}
 					)}
 				</Table>
-				// {/* {name} <ProdQtyLabel color='grey' basic content={`${prods.length}шт`} /> */}
 			}
 		</GlobalContext>
 	)

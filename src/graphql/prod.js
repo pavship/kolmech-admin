@@ -15,7 +15,7 @@ export const modelProds = gql`
 			}
 			order {
 				id
-				num
+				fullnum
 				enquiry {
 					id
 					num

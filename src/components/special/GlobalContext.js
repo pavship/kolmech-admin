@@ -39,15 +39,9 @@ const GlobalContext = ({
 		details,
 		extra,
 		bottomPanel,
-		setDetails: (details) => {
-			setLayout({ variables: { 
-				details,
-				extra: null
-				// ...details.type === 'Enquiry' && { extra: null }
-			}})
-		},
-		setExtra: (extra) => setLayout({ variables: { extra } }),
-		setBottomPanel: (bottomPanel) => setLayout({ variables: { bottomPanel } }),
+		setDetails: (details) => setLayout({ variables: { input: { details, extra: null } }}),
+		setExtra: (extra) => setLayout({ variables: { input: { extra } } }),
+		setBottomPanel: (bottomPanel) => setLayout({ variables: { input: { bottomPanel } } }),
 		setExpanded: (args) => setExpanded({variables: { args }}),
 		selectedProdIds,
 		setSelectedProdIds: (value) => 

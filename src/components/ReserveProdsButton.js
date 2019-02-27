@@ -17,7 +17,7 @@ const ReserveProdsButton = ({ modelId, orderId, prodIds }) => {
         <Button compact circular menu
           activeColor='green'
           active={!!extra}
-          onClick={(e) => {
+          onClick={e => {
             e.stopPropagation()
             setSelectedProdIds(prodIds)
             setExtra({

@@ -4,17 +4,18 @@ import styled from 'styled-components'
 // S prefix is used throughout the App just to have flexebility (two names for each component)
 // N prefix stands for NativeCssImplementation of a component (When html element is styled instead of semantic ui component) 
 
-import { 
-	Header as SHeader, 
-	// Label as SLabel,
-	Icon as SIcon, 
-	Button as SButton,
-	Message as SMessage,
-	Popup as SPopup,
-	Input as SInput,
-	Dropdown as SDropdown,
-	Form as SForm
-} from 'semantic-ui-react'
+import {
+    Header as SHeader,
+    // Label as SLabel,
+    Icon as SIcon,
+    Button as SButton,
+    Message as SMessage,
+    Popup as SPopup,
+    Input as SInput,
+    Dropdown as SDropdown,
+    Form as SForm,
+    Ref
+} from 'semantic-ui-react';
 
 export const theme = {
 	widths: {
@@ -30,38 +31,41 @@ export const theme = {
 	}
 }
 const getThemeColor = (color) => theme.colors[color] || color
-const baseSet = ({ theme, bt, bb, bc, bs, c, d, fs, fw, h, lh, mw, m, mb, mt, ml, o, ox, oy, p, pl, pr, pt, ta, va, w, ws }) => {
+const baseSet = ({ theme, bt, bb, bc, bs, c, d, fs, fw, h, lh, mw, minw, m, mb, mt, ml, mr, o, ox, oy, p, pe, pl, pr, pt, ta, va, w, ws }) => {
 	return `
-		${bt 	? `border-top: ${bt};`								: ''}
-		${bb 	? `border-bottom: ${bb};`							: ''}
-		${bc 	? `background-color: ${bc};`					: ''}
-		${bs 	? `box-sizing: ${bs};`								: ''}
-		${c 	? `color: ${c};`											: ''}
-		${d 	? `display: ${d};`										: ''}
-		${fs 	? `font-size: ${fs};`									: ''}
-		${fw 	? `font-weight: ${fw};`								: ''}
-		${h 	? `height: ${h};`											: ''}
-		${lh 	? `line-height: ${lh};`								: ''}
-		${mw 	? `max-width: ${mw};`									: ''}
-		${m 	? `margin: ${m};`											: ''}
-		${mb 	? `margin-bottom: ${mb};`							: ''}
-		${mt 	? `margin-top: ${mt};`								: ''}
-		${ml 	? `margin-left: ${ml};`								: ''}
-		${o  	? `opacity: ${o};`										: ''}
-		${ox  ? `overflow-x: ${ox};`								: ''}
-		${oy  ? `overflow-y: ${oy};`								: ''}
-		${p 	? `padding: ${p};`										: ''}
-		${pl 	? `padding-left: ${pl};`							: ''}
-		${pr 	? `padding-right: ${pr};`							: ''}
-		${pt 	? `padding-top: ${pt};`								: ''}
-		${ta 	? `text-align: ${ta};`								: ''}
-		${va 	? `vertical-align: ${va};`						: ''}
-		${w 	? `width: ${theme.widths[w] || w};`		: ''}
-		${ws 	? `word-spacing: ${ws};`							: ''}
+		${bt 	? `border-top: ${bt};`														: ''}
+		${bb 	? `border-bottom: ${bb};`													: ''}
+		${bc 	? `background-color: ${bc};`											: ''}
+		${bs 	? `box-sizing: ${bs};`														: ''}
+		${c 	? `color: ${c};`																	: ''}
+		${d 	? `display: ${d};`																: ''}
+		${fs 	? `font-size: ${fs};`															: ''}
+		${fw 	? `font-weight: ${fw};`														: ''}
+		${h 	? `height: ${h};`																	: ''}
+		${lh 	? `line-height: ${lh};`														: ''}
+		${mw 	? `max-width: ${mw};`															: ''}
+		${minw? `min-width: ${minw};`														: ''}
+		${m 	? `margin: ${m};`																	: ''}
+		${mb 	? `margin-bottom: ${mb};`													: ''}
+		${mt 	? `margin-top: ${mt};`														: ''}
+		${ml 	? `margin-left: ${ml};`														: ''}
+		${mr 	? `margin-right: ${mr};`													: ''}
+		${o  	? `opacity: ${o};`																: ''}
+		${ox  ? `overflow-x: ${ox};`														: ''}
+		${oy  ? `overflow-y: ${oy};`														: ''}
+		${p 	? `padding: ${p};`																: ''}
+		${pl 	? `padding-left: ${pl};`													: ''}
+		${pe 	? `pointer-events: ${pe};`												: ''}
+		${pr 	? `padding-right: ${pr};`													: ''}
+		${pt 	? `padding-top: ${pt};`														: ''}
+		${ta 	? `text-align: ${ta};`														: ''}
+		${va 	? `vertical-align: ${va};`												: ''}
+		${w 	? `width: ${(theme.widths && theme.widths[w]) || w};`		: ''}
+		${ws 	? `word-spacing: ${ws};`													: ''}
 	`
 }
 
-const DivPropFilter = ({ ml, inline, ...rest }) => (
+const DivPropFilter = ({ ml, w, inline, ...rest }) => (
 	<div {...rest} />
 )
 export const Div = styled(DivPropFilter)`
@@ -109,7 +113,12 @@ export const Header = styled(HeaderPropFilter)`
 	}
 `
 
-const IconPropFilter = ({ activeColor, ...rest }) => (
+const IconPropFilter = ({
+	active,
+	activeColor,
+	selectMode,
+	...rest
+}) => (
 	<SIcon {...rest} />
 )
 export const Icon = styled(IconPropFilter)`
@@ -194,7 +203,7 @@ export const Message = styled(MessagePropFilter)`
 	}
 `
 
-const SectionPropFiltered = ({
+const SectionPropFiltered = React.forwardRef(({
 	head,
 	minor,
 	small,
@@ -207,17 +216,19 @@ const SectionPropFiltered = ({
 	children,
 	onClick,
 	...rest
-}) => (
+}, ref) => (
 		<div
+			ref={ref}
 			{...rest}
 			onClick={onClick || undefined}
 		>
 			{children}
 		</div>
-)
+))
 export const Section = styled(SectionPropFiltered)`
 	width: 100%;
 	padding: 1em 1em 1em 55px;
+	${props => baseSet(props)}
 	${props => props.head && `{
 		display: flex;
 		align-items: center;
@@ -271,9 +282,11 @@ export const Label = styled.label`
 	margin-right: 0 !important;
 `
 
-const InputPropFilter = ({ w, ...rest }) => (
-	<SInput {...rest} />
-)
+const InputPropFilter = React.forwardRef(({ w, ...rest }, ref) => (
+	<Ref innerRef={ref}>
+		<SInput {...rest} />
+	</Ref>
+))
 export const Input = styled(InputPropFilter)`
 	&&&& {
 		${props => baseSet(props)}

@@ -2,7 +2,7 @@ import React from 'react'
 
 import { Span } from './styled/styled-semantic'
 
-const DetailsHeaderSubitle = ({ text }) => {
+const DetailsHeaderSubitle = ({ content }) => {
 	return (
 		<Span
 			ml='10px'
@@ -10,7 +10,7 @@ const DetailsHeaderSubitle = ({ text }) => {
 			c='rgba(0,0,0,.6)'
 			ws='0.5em'
 		>
-			{text}
+			{content}
 		</Span>
 	)
 }

@@ -30,11 +30,11 @@ export const Td = styled.td`
 		padding: .67857143em 0;
   }
 `
-export const InputTd = Td.extend`
+export const InputTd = styled(Td)`
 	padding-top: 0 !important;
 `
 
-export const EditorTd = InputTd.extend`
+export const EditorTd = styled(InputTd)`
 	font-weight: unset !important;
 	/* padding-bottom: 0 !important; */
 `

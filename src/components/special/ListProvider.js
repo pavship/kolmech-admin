@@ -1,5 +1,6 @@
 import { Component } from 'react'
 
+// deprecated, use SelectableListProvider
 export default class ListProvider extends Component {
 	state = {
 		list: []

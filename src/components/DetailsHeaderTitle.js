@@ -14,9 +14,9 @@ const DetailsHeaderTitle = ({
 			size={size || 'medium'}
 		>
 			{title}
-			{subtitle &&
+			{(subtitle || subtitle === 0) &&
 				<DetailsHeaderSubitle
-					text={subtitle}
+					content={subtitle}
 				/>
 			}
 		</Header>

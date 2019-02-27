@@ -43,7 +43,7 @@ class OrderEdit extends Component {
 				id: res.data.upsertOrder.id
 			})
 			this.props.setExpanded({
-				id: res.data.upsertOrder.id,
+				id: res.data.upsertOrder.enquiry.id,
 				value: true
 			})
 		} catch (err) {
@@ -165,7 +165,7 @@ export default compose(
 					enquiry.orders = [
 						...enquiry.orders.filter(o => o.id !== upsertedOrder.id),
 						upsertedOrder
-					].sort((a, b) => a.num > b.num)
+					].sort((a, b) => a.fullnum > b.fullnum ? 1 : -1)
 					cache.writeQuery({ query, data })
 				}
 			}
