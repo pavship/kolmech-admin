@@ -11,10 +11,10 @@
  * See https://goo.gl/2aRDsh
  */
 
-importScripts("https://storage.googleapis.com/workbox-cdn/releases/3.6.2/workbox-sw.js");
+importScripts("https://storage.googleapis.com/workbox-cdn/releases/3.6.3/workbox-sw.js");
 
 importScripts(
-  "/kolmech-admin/precache-manifest.0a882148b1857944833b0833072f2ba2.js"
+  "/kolmech-admin/precache-manifest.a975885bdb975299f7dc57fd926bb7ce.js"
 );
 
 workbox.clientsClaim();
