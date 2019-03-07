@@ -84,9 +84,9 @@ export const client = new ApolloClient({
 		}),
 		// new HttpLink({ uri: 'http://localhost:4000' })
 		createUploadLink({
-			uri: 'http://localhost:4000',
+			// uri: 'http://localhost:4000',
 			// uri: 'https://now-advanced.now.sh',
-			// uri: 'https://env-1542080.mircloud.ru',
+			uri: 'https://env-1542080.mircloud.ru',
 		})
 	]),
 	cache
