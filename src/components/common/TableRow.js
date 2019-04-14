@@ -12,7 +12,7 @@ const Row = styled.tr`
 	cursor: pointer;
 	border-bottom: 1px solid rgba(34, 36, 38, 0.15);
 	:hover {
-		background: rgba(0,0,0,.05);
+		background: rgb(242, 242, 242);
 		color: rgba(0,0,0,.95);
 	}
 	${props => props.lineHeight && `
@@ -44,8 +44,8 @@ const tdActiveStyle = `
 const Td = styled.td`
 	padding-right: 4px;
 	white-space: nowrap;
-	overflow: hidden;
   text-overflow: ellipsis;
+	${props => !props.truncated && `overflow: hidden;`}
 	${props => props.service && `padding-left: 3px;`}
 	${Row}:not(:hover) & {
 		${props => props.hoverable
@@ -56,6 +56,7 @@ const Td = styled.td`
 		`}
 	}
 	${props => props.color && `color: ${props.color};`}
+	${props => props.truncated && `position: relative`}
 	${props => props.hoverable && `
 		transition: background .3s ease;
 		${props.hideUnhovered && `
@@ -67,6 +68,32 @@ const Td = styled.td`
 		}
 		${props.active ? tdActiveStyle : ''}
 	`}
+`
+
+const Untruncated = styled.div`
+	text-overflow: ellipsis;
+	overflow: hidden;
+	box-sizing: content-box;
+	/*
+	// horizontal overlay
+	:hover {
+		width: max-content;
+		overflow: unset;
+		background-color: white;
+	} */
+	/* vertical overlay */
+	:hover {
+		position: absolute;
+		top: 1px;
+		left: -4px;
+		width: 100%;
+		z-index: 1;
+		overflow: unset;
+		white-space: normal;
+		background-color: white;
+		border: 5px solid rgb(242,242,242);
+    border-top: none;
+	}
 `
 
 const TableRow = props => {
@@ -182,7 +209,13 @@ const TableRow = props => {
 								color={iconColor || undefined}
 							/>
 						}
-						{val}
+
+						{f.truncated
+							? <Untruncated>
+									{val}
+								</Untruncated>
+							: val
+						}
 					</Td>
 				)
 			})}

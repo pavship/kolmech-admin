@@ -19,7 +19,8 @@ import produce from 'immer';
 const Container = styled.div`
 	min-height: content;
 	max-width: 50%;
-	flex: 1 1 500px;
+	min-width: 430px;
+	flex: 0 0 430px;
 	box-shadow: 0 2px 4px 0 rgba(34,36,38,.12), 0 2px 10px 0 rgba(34,36,38,.15);
 	border: 1px solid rgba(34,36,38,.15);
 	border-radius: .28571429rem;
@@ -44,15 +45,17 @@ const Fields = styled.div`
 
 export default ({
 	payment,
+	reset,
 	articles,
 	equipment
 }) => {
-	let schema = formikSchema(new Date)
+	let schema = formikSchema(new Date())
 	let initialValues = payment ? projectEntity(payment, schema) : schema
 	const formLabelWidth = '110px'
 	const articleOptions = articles.map(a => 
 		({ key: a.id, text: a.rusName, value: a.id })
 	)
+	const bankPayment = payment && payment.org
 	return (
 		<NotificationsConsumer>
 			{({ notify }) =>
@@ -75,7 +78,7 @@ export default ({
 									refetchPersons()
 									notify({
 										type: 'success',
-										title: 'Контакты синхронизированны'
+										title: 'Контакты синхронизированы'
 									})
 								}}
 								onError={err => notify({
@@ -86,7 +89,7 @@ export default ({
 							>
 								{(syncWithAmoContacts, { loading }) => 
 									<Header>
-										Добавить платеж
+										{(payment ? 'Изменить' : 'Добавить') + ' платеж'}
 										<Button
 											ml='auto'
 											icon='sync alternate'
@@ -116,7 +119,12 @@ export default ({
 										cache.writeQuery({
 											query: paymentsPage,
 											data: {
-												payments: produce(payments, draft => { draft.unshift(upsertPayment) })
+												payments: produce(payments, draft => {
+													const foundIndex = draft.findIndex(p => p.id === upsertPayment.id)
+													return foundIndex
+														? draft.splice(foundIndex, 1, upsertPayment)
+														: draft.unshift(upsertPayment)
+												})
 											}
 										})
 									}}
@@ -124,17 +132,17 @@ export default ({
 									{(upsertPayment, { loading }) =>
 										<Formik
 											initialValues={initialValues}
+											enableReinitialize={true}
 											validationSchema={validationSchema}
 											onSubmit={async (values, { resetForm }) => {
 												// console.log('values > ', values)
-												const initialValues = payment ? projectEntity(payment, schema) : schema
 												// console.log('initialValues > ', initialValues)
 												const input = preparePayload(values, initialValues, schema)
 												// console.log('input > ', input)
 												await upsertPayment({ variables: { input } })
 												// const upserted = await upsertPayment({ variables: { input } })
 												// console.log('upserted > ', upserted)
-												return resetForm()
+												return payment ? reset() : resetForm()
 											}}
 										>
 											{({
@@ -145,31 +153,35 @@ export default ({
 												<Fields
 													labelWidth={formLabelWidth}
 												>
-													<Field
-														label='Дата'
-														required
-														name='dateLocal'
-														type='date'
-													/>
+													{!bankPayment &&
+														<Field
+															label='Дата'
+															required
+															name='dateLocal'
+															type='date'
+														/>
+													}
 													<Field
 														label='Статья'
 														required
 														name='articleId'
 														options={articleOptions}
 													/>
-													<Field
-														label='Контрагент'
-														required
-														name='personId'
-														options={data.persons
-															? data.persons.map(p => 
-																({ key: p.id, text: p.amoName || p.fName, value: p.id })
-															)
-															: undefined
-														}
-														loading={personsLoading}
-														disabled={personsLoading}
-													/>
+													{!bankPayment &&
+														<Field
+															label='Контрагент'
+															required
+															name='personId'
+															options={data.persons
+																? data.persons.map(p => 
+																	({ key: p.id, text: p.amoName || p.fName, value: p.id })
+																)
+																: undefined
+															}
+															loading={personsLoading}
+															disabled={personsLoading}
+														/>
+													}
 													{values.articleId 
 														&& articles.find(a => a.id === values.articleId).relations
 														&& articles.find(a => a.id === values.articleId).relations.includes('EQUIPMENT') &&
@@ -182,15 +194,17 @@ export default ({
 																)}
 															/>
 													}
-													<Field
-														label='Назначение'
-														name='purpose'
-													/>
-													<Field
-														label='Сумма'
-														required
-														name='amount'
-													/>
+													{!bankPayment && <>
+														<Field
+															label='Назначение'
+															name='purpose'
+														/>
+														<Field
+															label='Сумма'
+															required
+															name='amount'
+														/>
+													</>}
 													<Button
 														ml={formLabelWidth}
 														type='button'
@@ -200,7 +214,7 @@ export default ({
 														onClick={handleSubmit}
 													/>
 													<A cancel
-														onClick={handleReset}
+														onClick={payment ? () => reset() : handleReset}
 													>
 														{payment ? 'Отмена' : 'Очистить'}
 													</A>

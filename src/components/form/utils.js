@@ -20,6 +20,8 @@ const handleObj = (objSchema, obj = {}, result) => {
 			return handleArr(objSchema[k], obj[k], result[k] = [])
 		if (type === 'object')
 			return handleObj(objSchema[k], obj[k], result[k] = {})
+		if (k.endsWith('Id') && !!obj[k.slice(0, -2)])
+			return result[k] = obj[k.slice(0, -2)].id
 		result[k] = obj[k] || objSchema[k]
 	})
 }
@@ -43,7 +45,7 @@ const handlePayloadObj = (objSchema, initialObj, obj, result) => {
 		// console.log('objSchema[k] > ', objSchema[k])
 		// preserve any db entities' Ids
 		// if (k.endsWith('Id')) return result[k] = obj[k] || objSchema[k]
-		if (k.endsWith('Id') && !!obj[k]) return result[k] = obj[k]
+		// if (k.endsWith('Id') && !!obj[k]) return result[k] = obj[k]
 		const type = typeof objSchema[k]
 		// NOTE form schema should contain only non-empty nested objects
 		if (type === 'object' && Array.isArray(objSchema[k]))
@@ -55,7 +57,7 @@ const handlePayloadObj = (objSchema, initialObj, obj, result) => {
 		if (obj[k] !== initialObj[k]) return result[k] = obj[k]
 		// and non-empty schema values
 		// console.log('!!objSchema[k] > ', !!objSchema[k])
-		if (!!objSchema[k]) return result[k] = objSchema[k]
+		if (!obj[k] && !!objSchema[k]) return result[k] = objSchema[k]
 	})
 }
 

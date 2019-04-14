@@ -133,6 +133,7 @@ export const Icon = styled(IconPropFilter)`
 			&.active {
 				color: ${getThemeColor(props.activeColor)} !important;
 			}
+			${props.active && `color: ${getThemeColor(props.activeColor)} !important;`}
 		}`}
 	}
 `

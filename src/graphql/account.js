@@ -10,6 +10,7 @@ export const accountFragmentFull = gql`
 	fragment AccountFragmentFull on Account {
 		...AccountFragmentBasic
 		name
+		number
 	}
 	${accountFragmentBasic}
 `

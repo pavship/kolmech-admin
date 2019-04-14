@@ -1,5 +1,4 @@
-import React, { Component } from 'react'
-import { produce } from 'immer'
+import { Component } from 'react'
 
 export default class StatefulBool extends Component {
   state = {

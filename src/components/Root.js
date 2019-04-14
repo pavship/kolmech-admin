@@ -69,7 +69,6 @@ class Root extends Component {
 										)}
 									/>
 									<Route
-										exact
 										path="/pay"
 										render={() => (
 											<PaymentsPage
@@ -78,7 +77,7 @@ class Root extends Component {
 											/>
 										)}
 									/>
-									<Redirect to="/pay" />
+									<Redirect to="/" />
 								</Switch>
 							}}
 					</Query>

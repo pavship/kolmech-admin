@@ -3,6 +3,7 @@ import { articleFragmentBasic, articleFragmentFull } from './article'
 import { personFragmentBasic } from './person'
 import { accountFragmentBasic, accountFragmentFull } from './account'
 import { equipmentFragmentBasic } from './equipment'
+import { orgFragmentBasic } from './org';
 
 export const paymentFragmentBasic = gql`
 	fragment PaymentFragmentBasic on Payment {
@@ -13,11 +14,13 @@ export const paymentFragmentBasic = gql`
 		account { ...AccountFragmentBasic }
 		article { ...ArticleFragmentBasic }
 		equipment { ...EquipmentFragmentBasic }
+		org { ...OrgFragmentBasic }
 		person { ...PersonFragmentBasic }
 	}
 	${accountFragmentBasic}
 	${articleFragmentBasic}
 	${equipmentFragmentBasic}
+	${orgFragmentBasic}
 	${personFragmentBasic}
 `
 

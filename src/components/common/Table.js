@@ -84,7 +84,12 @@ const Table = ({
 			<TBody>
 				<Fragment>
 					{children({
-						tableFields: fieldsExtended.map(f => ({ name: f.name, path: f.path })),
+						tableFields: fieldsExtended.map(f => {
+							const field = { ...f }
+							delete field.width
+							delete field.title
+							return field
+						}),
 					})}
 				</Fragment>
 			</TBody>

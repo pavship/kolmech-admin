@@ -26,8 +26,7 @@ const fields = [{
 	title: 'Статья',
 	width: '180px'
 },{
-  name: 'person',
-  path: 'person.amoName',
+  name: 'counterparty',
   title: 'Контрагент',
   width: '200px'
 },{
@@ -39,7 +38,8 @@ const fields = [{
   name: 'purpose',
   path: 'purpose',
   title: 'Назначение',
-  width: '270px'
+  width: '270px',
+  truncated: true
 },{
   name: 'amount',
   path: 'amount',
@@ -48,7 +48,8 @@ const fields = [{
 }]
 
 export default ({
-  payments
+  payments,
+  onClickRow
 }) => {
   //  TODO add CollectionUtils to support sorting
   return (
@@ -58,7 +59,8 @@ export default ({
       >
         {({ tableFields }) => 
           payments.map(payment => {
-            const { id, dateLocal, amount,  article: { isIncome } } = payment
+            const { id, dateLocal, amount, person } = payment
+            const isIncome = payment.article ? payment.article.isIncome : payment.isIncome
             return (
               <TableRow
                 key={id}
@@ -70,11 +72,16 @@ export default ({
                     value: dateLocal.slice(0,16).replace('T', ' '),
                   },
                   {
+                    name: 'counterparty',
+                    path: person ? 'person.amoName' : 'org.name',
+                  },
+                  {
                     name: 'amount',
                     value: isIncome ? amount : -amount,
                     color: isIncome ? '#016936' : '#9f3a38'
                   }
                 ]}
+                onClick={() => onClickRow(id)}
               />
             )
           }

@@ -5,6 +5,16 @@ import { Div } from '../styled/styled-semantic'
 import { Statistic } from 'semantic-ui-react'
 import { currency } from '../../utils/format';
 
+const Container = styled.div`
+	flex-grow: 1;
+	height: 100%;
+	margin-left: 30px;
+  overflow-y: auto;
+	>div {
+		width: 100%;
+	}
+`
+
 const SStatistic = styled(Statistic)`
 	&&&&>.value {
 		${({ color }) => color && `
@@ -13,7 +23,8 @@ const SStatistic = styled(Statistic)`
 				color === 'red' ? '#9f3a38' :
 				color === 'purple' ? '#9924bf' :
 				// color === 'violet' ? '#5d31bb' :
-				''
+				color === 'blue' ? '#2185d0' :
+				color
 			};
 		`}
 		text-align: unset;
@@ -32,10 +43,12 @@ export default ({
 	const accountsStats = payments
 		.reduce((accounts, p) => {
 			const account = accounts.find(a => a.id === p.account.id)
-			account.total += (p.article.isIncome ? 1 : -1) * p.amount
+			const isIncome = p.article ? p.article.isIncome : p.isIncome
+			account.total += (isIncome ? 1 : -1) * p.amount
 			return accounts
 		}, accounts.map(a => ({ ...a, total: 0 })))
 	const persons = payments
+		.filter(p => !!p.person)
 		.map(p => p.person)
 		.reduce((uniquePersons, p) => {
 			if (!uniquePersons.find(up => up.id === p.id))
@@ -43,6 +56,7 @@ export default ({
 			return uniquePersons
 		}, [])
 	const deptsAndLoans = payments
+		.filter(p => !!p.article)
 		.filter(p => p.article.isLoan)
 		.reduce((depts, p) => {
 			const person = depts.find(d => d.id === p.person.id)
@@ -55,26 +69,57 @@ export default ({
 			return split
 		}, [[],[]])
 	return (
-		<Div
-			m='0 30px'
-		>
+		<Container>
 			<Statistic.Group>
 				<SStatistic
 					color='green'
 				>
 					<Statistic.Value
-						content={currency(accountsStats.reduce((sum, a) => sum + a.total, 0))}
+						content={currency(accountsStats
+							.filter(a => !a.number) // only cache accounts
+							.reduce((sum, a) => sum + a.total, 0))}
 					/>
 					<Statistic.Label
 						content='Касса, в т.ч.'
 					/>
-					<Statistic.Group horizontal>
-						{accountsStats.map(({ id, name, total }) =>
-							<Statistic
-								key={id}
-								label={name}
-								value={currency(total)} 
-							/>
+					<Statistic.Group
+						horizontal
+						size='small'
+					>
+						{accountsStats
+							.filter(a => !a.number)
+							.map(({ id, name, total }) =>
+								<Statistic
+									key={id}
+									label={name}
+									value={currency(total)} 
+								/>
+						)}
+					</Statistic.Group>
+				</SStatistic>
+				<SStatistic
+					color='blue'
+				>
+					<Statistic.Value
+						content={currency(accountsStats
+							.filter(a => !!a.number) // only bank accounts
+							.reduce((sum, a) => sum + a.total, 0))}
+					/>
+					<Statistic.Label
+						content='Счета, в т.ч.'
+					/>
+					<Statistic.Group
+						horizontal
+						size='small'
+					>
+						{accountsStats
+							.filter(a => !!a.number)
+							.map(({ id, name, total }) =>
+								<Statistic
+									key={id}
+									label={name}
+									value={currency(total)} 
+								/>
 						)}
 					</Statistic.Group>
 				</SStatistic>
@@ -94,7 +139,7 @@ export default ({
 						{deptsAndLoans[0].map(({ id, amoName, total }) =>
 							<Statistic
 								key={id}
-								label={amoName}
+								label={amoName.slice(0, amoName.lastIndexOf(' ') + 2) + '.'}
 								value={currency(total)} 
 							/>
 						)}
@@ -116,14 +161,14 @@ export default ({
 						{deptsAndLoans[1].map(({ id, amoName, total }) =>
 							<Statistic
 								key={id}
-								label={amoName}
+								label={amoName.slice(0, amoName.lastIndexOf(' ') + 2) + '.'}
 								value={currency(total)}
 							/>
 						)}
 					</Statistic.Group>
 				</SStatistic>
 			</Statistic.Group>
-		</Div>
+		</Container>
 	)
 }
 
