@@ -120,10 +120,10 @@ export default ({
 											query: paymentsPage,
 											data: {
 												payments: produce(payments, draft => {
-													const foundIndex = draft.findIndex(p => p.id === upsertPayment.id)
-													if (foundIndex)
-														draft.splice(foundIndex, 1, upsertPayment)
-														else draft.unshift(upsertPayment)
+													const foundIndex = payments.findIndex(p => p.id === upsertPayment.id)
+													foundIndex !== -1
+														? draft.splice(foundIndex, 1, upsertPayment)
+														: draft.unshift(upsertPayment)
 												})
 											}
 										})
@@ -138,6 +138,7 @@ export default ({
 												// console.log('values > ', values)
 												// console.log('initialValues > ', initialValues)
 												const input = preparePayload(values, initialValues, schema)
+												if (!payment && !input.dateLocal) input.dateLocal = initialValues.dateLocal
 												// console.log('input > ', input)
 												await upsertPayment({ variables: { input } })
 												// const upserted = await upsertPayment({ variables: { input } })
