@@ -133,6 +133,7 @@ export default () => {
                           <PaymentStats
                             payments={payments}
                             accounts={accounts}
+                            orgs={orgs}
                           />
                         </>)}
                       />

@@ -37,6 +37,7 @@ const SStatistic = styled(Statistic)`
 export default ({
 	payments,
 	accounts,
+	orgs,
 }) => {
 	// TODO make postgres aggregation query on server side instead of reduce here
 	const accountsStats = payments
@@ -54,14 +55,17 @@ export default ({
 				uniquePersons.push(p)
 			return uniquePersons
 		}, [])
-	const deptsAndLoans = payments
+	const debtsAndLoans = payments
 		.filter(p => !!p.article)
 		.filter(p => p.article.isLoan)
-		.reduce((depts, p) => {
-			const person = depts.find(d => d.id === p.person.id)
-			person.total += (p.article.isIncome ? 1 : -1) * p.amount
-			return depts
-		}, persons.map(a => ({ ...a, total: 0 })))
+		.reduce((debts, p) => {
+			const counterparty = debts.find(d => d.id === (p.person && p.person.id) || d.id === (p.org && p.org.id))
+			counterparty.total += (p.article.isIncome ? 1 : -1) * p.amount
+			return debts
+		}, [
+			...persons.map(a => ({ ...a, total: 0 })),
+			...orgs.map(a => ({ ...a, total: 0 }))
+		])
 		.reduce((split, d) => {
 			if (d.total > 0) split[1].push(d)
 			else if (d.total < 0) split[0].push({ ...d, total: -1*d.total})
@@ -126,7 +130,7 @@ export default ({
 					color='purple'
 				>
 					<Statistic.Value
-						content={currency(deptsAndLoans[0].reduce((sum, l) => sum + l.total, 0))}
+						content={currency(debtsAndLoans[0].reduce((sum, l) => sum + l.total, 0))}
 					/>
 					<Statistic.Label
 						content='Нам должны, в т.ч.'
@@ -135,10 +139,13 @@ export default ({
 						horizontal
 						size='small'
 					>
-						{deptsAndLoans[0].map(({ id, amoName, total }) =>
+						{debtsAndLoans[0].map(({ id, amoName, name, total }) =>
 							<Statistic
 								key={id}
-								label={amoName.slice(0, amoName.lastIndexOf(' ') + 2) + '.'}
+								label={!!amoName
+									? amoName.slice(0, amoName.lastIndexOf(' ') + 2) + '.'
+									: name.slice(0, 12) + '...'
+								}
 								value={currency(total)} 
 							/>
 						)}
@@ -148,7 +155,7 @@ export default ({
 					color='red'
 				>
 					<Statistic.Value
-						content={currency(-deptsAndLoans[1].reduce((sum, d) => sum + d.total, 0))}
+						content={currency(-debtsAndLoans[1].reduce((sum, d) => sum + d.total, 0))}
 					/>
 					<Statistic.Label
 						content='Мы должны, в т.ч.'
@@ -157,10 +164,13 @@ export default ({
 						horizontal
 						size='small'
 					>
-						{deptsAndLoans[1].map(({ id, amoName, total }) =>
+						{debtsAndLoans[1].map(({ id, amoName, name, total }) =>
 							<Statistic
 								key={id}
-								label={amoName.slice(0, amoName.lastIndexOf(' ') + 2) + '.'}
+								label={!!amoName
+									? amoName.slice(0, amoName.lastIndexOf(' ') + 2) + '.'
+									: name.slice(0, 12) + '...'
+								}
 								value={currency(total)}
 							/>
 						)}
