@@ -150,6 +150,7 @@ export default () => {
                     <BottomSection>
                       <PaymentTable
                         payments={payments}
+                        activePayment={activePayment}
                         onClickRow={id => setActivePayment(payments.find(p => p.id === id))}
                       />
                     </BottomSection>

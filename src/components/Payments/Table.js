@@ -16,6 +16,9 @@ const Container = styled.div`
 `
 
 const fields = [{
+  name: 'edit',
+	width: '35px'
+},{
   name: 'dateLocal',
   path: 'dateLocal',
 	title: 'Дата и время',
@@ -49,6 +52,7 @@ const fields = [{
 
 export default ({
   payments,
+  activePayment,
   onClickRow
 }) => {
   //  TODO add CollectionUtils to support sorting
@@ -68,6 +72,18 @@ export default ({
                 tableFields={tableFields}
                 rowFields={[
                   {
+                    name: 'edit',
+                    icon: 'edit',
+                    iconColor: 'grey',
+                    hoverable: true,
+                    hideUnhovered: true,
+                    hasEntries: false,
+                    value: ' ',
+                    onClick: () => onClickRow(id),
+                    active: activePayment
+                      && activePayment.id === id
+                  },
+                  {
                     name: 'dateLocal',
                     value: dateLocal.slice(0,16).replace('T', ' '),
                   },
@@ -81,7 +97,7 @@ export default ({
                     color: isIncome ? '#016936' : '#9f3a38'
                   }
                 ]}
-                onClick={() => onClickRow(id)}
+                // onClick={() => onClickRow(id)}
               />
             )
           }

@@ -9,12 +9,12 @@ import { currency } from '../../utils/format'
 
 const Row = styled.tr`
 	font-size: 1rem;
-	cursor: pointer;
 	border-bottom: 1px solid rgba(34, 36, 38, 0.15);
 	:hover {
 		background: rgb(242, 242, 242);
 		color: rgba(0,0,0,.95);
 	}
+	${props => !!props.onClick && `cursor: pointer;`}
 	${props => props.lineHeight && `
 		line-height: ${props.lineHeight};
 	`}
@@ -44,7 +44,8 @@ const tdActiveStyle = `
 const Td = styled.td`
 	padding-right: 4px;
 	white-space: nowrap;
-  text-overflow: ellipsis;
+	text-overflow: ellipsis;
+	${props => !!props.onClick && `cursor: pointer;`}
 	${props => !props.truncated && `overflow: hidden;`}
 	${props => props.service && `padding-left: 3px;`}
 	${Row}:not(:hover) & {
@@ -165,9 +166,9 @@ const TableRow = props => {
 					name,
 					value,
 					path,
-					onClick,
 					icon,
 					iconColor,
+					onClick,
 					...rest
 				} = f
 				if (component || content) return (
