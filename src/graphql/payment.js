@@ -8,6 +8,7 @@ import { orgFragmentBasic } from './org';
 export const paymentFragmentBasic = gql`
 	fragment PaymentFragmentBasic on Payment {
 		id
+		isIncome
 		dateLocal
 		amount
 		purpose
@@ -35,11 +36,13 @@ export const paymentsPage = gql`
 	query PaymentsPage {
 		accounts { ...AccountFragmentFull }
 		articles { ...ArticleFragmentFull }
+		orgs { ...OrgFragmentBasic }
 		equipments { ...EquipmentFragmentBasic }
 		payments { ...PaymentFragmentBasic }
 	}
 	${accountFragmentFull}
 	${articleFragmentFull}
+	${orgFragmentBasic}
 	${equipmentFragmentBasic}
 	${paymentFragmentBasic}
 `

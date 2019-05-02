@@ -43,9 +43,6 @@ const handlePayloadObj = (objSchema, initialObj, obj, result) => {
 	Object.keys(objSchema).forEach(k => {
 		// console.log('k > ', k)
 		// console.log('objSchema[k] > ', objSchema[k])
-		// preserve any db entities' Ids
-		// if (k.endsWith('Id')) return result[k] = obj[k] || objSchema[k]
-		// if (k.endsWith('Id') && !!obj[k]) return result[k] = obj[k]
 		const type = typeof objSchema[k]
 		// NOTE form schema should contain only non-empty nested objects
 		if (type === 'object' && Array.isArray(objSchema[k]))
@@ -53,10 +50,8 @@ const handlePayloadObj = (objSchema, initialObj, obj, result) => {
 		if (type === 'object')
 			return handlePayloadObj(objSchema[k], initialObj[k], obj[k], result[k] = {})
 		// result includes changed values
-		// console.log('obj[k] !== initialObj[k] > ', obj[k] !== initialObj[k])
 		if (obj[k] !== initialObj[k]) return result[k] = obj[k]
 		// and non-empty schema values
-		// console.log('!!objSchema[k] > ', !!objSchema[k])
 		if (!obj[k] && !!objSchema[k]) return result[k] = objSchema[k]
 	})
 }

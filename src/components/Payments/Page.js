@@ -65,6 +65,7 @@ export default () => {
               data: {
                 payments,
                 articles,
+                orgs,
                 accounts,
                 equipments: equipment
               },
@@ -72,11 +73,11 @@ export default () => {
             }) => <>
               <Mutation
                 mutation={syncWithTochkaPayments}
-                onCompleted={() => {
+                onCompleted={({ syncWithTochkaPayments: { count } }) => {
                   refetchPayments()
                   notify({
                     type: 'success',
-                    title: 'Платежи синхронизированы с банком'
+                    title: 'Платежи синхронизированы с банком. Добавлено: ' + count
                   })
                 }}
                 onError={err => notify({
@@ -126,6 +127,7 @@ export default () => {
                             payment={activePayment}
                             reset={() => setActivePayment(null)}
                             articles={articles}
+                            orgs={orgs}
                             equipment={equipment}
                           />
                           <PaymentStats

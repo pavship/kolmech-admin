@@ -353,16 +353,10 @@ class EnquiryDetails extends Component {
 													size='big' 
 													content={userInitials}
 													indent={!e.type || e.type === 'COMMENT' ? 1 : 0} />
-												{/* <Comment.Avatar src='https://react.semantic-ui.com/images/avatar/small/matt.jpg' /> */}
 												<CContent>
-													{/* <Comment.Author 
-														as='span' 
-														content={fName + ' ' + lName} /> */}
 													<CMetadata
 														content={e.datetimeLocal.slice(0,16)} />
 													<CText dangerouslySetInnerHTML={{__html: sanitize(e.htmlText)}} />
-													{/* <Comment.Actions
-														content={( <a>Reply</a> )} /> */}
 												</CContent>
 											</Comment>
 										)
@@ -425,8 +419,7 @@ export default compose(
 				enquiry.status = newEvent.status
 				if (newEvent.doc) enquiry.docs.push(newEvent.doc)
 				cache.writeQuery({ query, data })
-			},
-			// refetchQueries:[ 'allEnquiries' ]
+			}
 		})
   }),
 	graphql(newEnquiry, { name: 'enquiryQuery', skip: (props) => props.id !== 'new' }),

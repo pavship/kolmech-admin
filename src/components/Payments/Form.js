@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 
 import { Mutation, Query } from 'react-apollo'
 import { upsertPayment, paymentsPage } from '../../graphql/payment'
@@ -15,6 +15,7 @@ import styled from 'styled-components'
 import { Button, A, Div } from '../styled/styled-semantic'
 import { persons } from '../../graphql/person';
 import produce from 'immer';
+import { createOrg } from '../../graphql/org';
 
 const Container = styled.div`
 	min-height: content;
@@ -43,10 +44,27 @@ const Fields = styled.div`
 	}
 `
 
+const CounterpartyFieldSwitch = ({
+	children,
+	payment
+}) => {
+	const [orgCounterparty, setOrgCounterparty] = useState(!!(payment && payment.org))
+	useEffect(() => {
+		setOrgCounterparty(!!(payment && payment.org))
+	}, [payment])
+	return (
+		children({
+			orgCounterparty,
+			setOrgCounterparty
+		})
+	)
+}
+
 export default ({
 	payment,
 	reset,
 	articles,
+	orgs,
 	equipment
 }) => {
 	let schema = formikSchema(new Date())
@@ -55,7 +73,7 @@ export default ({
 	const articleOptions = articles.map(a => 
 		({ key: a.id, text: a.rusName, value: a.id })
 	)
-	const bankPayment = payment && payment.org
+	const bankPayment = payment && payment.isIncome !== null
 	return (
 		<NotificationsConsumer>
 			{({ notify }) =>
@@ -135,14 +153,10 @@ export default ({
 											enableReinitialize={true}
 											validationSchema={validationSchema}
 											onSubmit={async (values, { resetForm }) => {
-												// console.log('values > ', values)
-												// console.log('initialValues > ', initialValues)
 												const input = preparePayload(values, initialValues, schema)
-												if (!payment && !input.dateLocal) input.dateLocal = initialValues.dateLocal
-												// console.log('input > ', input)
+												if (!payment && !input.dateLocal) 
+													input.dateLocal = initialValues.dateLocal
 												await upsertPayment({ variables: { input } })
-												// const upserted = await upsertPayment({ variables: { input } })
-												// console.log('upserted > ', upserted)
 												return payment ? reset() : resetForm()
 											}}
 										>
@@ -150,6 +164,7 @@ export default ({
 												values,
 												handleSubmit,
 												handleReset,
+												setFieldValue,
 											}) =>
 												<Fields
 													labelWidth={formLabelWidth}
@@ -168,21 +183,94 @@ export default ({
 														name='articleId'
 														options={articleOptions}
 													/>
-													{!bankPayment &&
-														<Field
-															label='Контрагент'
-															required
-															name='personId'
-															options={data.persons
-																? data.persons.map(p => 
-																	({ key: p.id, text: p.amoName || p.fName, value: p.id })
-																)
-																: undefined
+													{!bankPayment && (
+														<CounterpartyFieldSwitch
+															key={payment}
+															payment={payment}
+														>
+															{({orgCounterparty, setOrgCounterparty}) =>
+															orgCounterparty
+															? <Mutation
+																	mutation={createOrg}
+																	onCompleted={(res) => console.log('res > ', res) || notify({
+																		type: 'success',
+																		title: 'Организация добавлена'
+																	})}
+																	onError={err => notify({
+																		type: 'error',
+																		title: 'Ошибка. Организация не добавлена',
+																		content: err.message,
+																	})}
+																	update={(cache, { data: { createOrg } }) => {
+																		const { orgs } = cache.readQuery({ query: paymentsPage })
+																		cache.writeQuery({
+																			query: paymentsPage,
+																			data: {
+																				orgs: produce(orgs, draft => {
+																					const foundIndex = orgs.findIndex(o => o.id === createOrg.id)
+																					foundIndex !== -1
+																						? draft.splice(foundIndex, 1, createOrg)
+																						: draft.unshift(createOrg)
+																				})
+																			}
+																		})
+																		
+																	}}
+																>
+																	{(createOrg, { loading: orgsLoading }) =>
+																		<Field
+																			label='Контрагент'
+																			required
+																			name='orgId'
+																			options={orgs
+																				? orgs.map(o => 
+																					({ key: o.id, text: o.name + ' (ИНН: ' + o.inn + ')', value: o.id })
+																				)
+																				: []
+																			}
+																			loading={orgsLoading}
+																			disabled={orgsLoading}
+																			allowAdditions
+																			additionLabel='Добавить по ИНН: '
+																			onAddItem={async (e, { value: inn }) => {
+																				const created = await createOrg({ variables: { inn: inn.toString() } })
+																				setFieldValue('orgId', created && created.data && created.data.createOrg.id)
+																			}}
+																			contentBeforeField={<div>
+																				Организация или <A
+																					onClick={() => {
+																						setOrgCounterparty(false)
+																						setFieldValue('orgId', '')
+																					}}
+																				>Персона</A>
+																			</div>}
+																		/>
+																	}
+																</Mutation>
+															: <Field
+																	label='Контрагент'
+																	required
+																	name='personId'
+																	options={data.persons
+																		? data.persons.map(p => 
+																			({ key: p.id, text: p.amoName || p.fName, value: p.id })
+																		)
+																		: []
+																	}
+																	loading={personsLoading}
+																	disabled={personsLoading}
+																	contentBeforeField={<div>
+																		Персона или <A
+																			onClick={() => {
+																				setOrgCounterparty(true)
+																				setFieldValue('personId', '')
+																			}}
+																		>Организация</A>
+																	</div>}
+																/>
 															}
-															loading={personsLoading}
-															disabled={personsLoading}
-														/>
-													}
+														</CounterpartyFieldSwitch>
+													)}
 													{values.articleId 
 														&& articles.find(a => a.id === values.articleId).relations
 														&& articles.find(a => a.id === values.articleId).relations.includes('EQUIPMENT') &&
@@ -232,4 +320,3 @@ export default ({
 		</NotificationsConsumer>
 	)
 }
-

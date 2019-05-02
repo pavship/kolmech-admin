@@ -1,9 +1,8 @@
 import React from 'react'
 
 import styled from 'styled-components'
-import { Div } from '../styled/styled-semantic'
 import { Statistic } from 'semantic-ui-react'
-import { currency } from '../../utils/format';
+import { currency } from '../../utils/format'
 
 const Container = styled.div`
 	flex-grow: 1;
