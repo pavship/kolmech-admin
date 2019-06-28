@@ -6,7 +6,7 @@ import { upsertEmployee } from '../../graphql/employee'
 import { Formik } from 'formik'
 import { projectEntity, preparePayload } from '../form/utils'
 import { formikSchema, validationSchema } from '../../schema/employee'
-import Field from '../form/Field'
+import Field from '../form/FormikField'
 
 import { Button, A, Message } from '../styled/styled-semantic'
 

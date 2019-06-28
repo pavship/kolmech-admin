@@ -10,26 +10,12 @@ import PaymentStats from './Stats'
 import PaymentTable from './Table'
 import { syncWithTochkaPayments } from '../../graphql/tochka'
 import { NotificationsConsumer } from '../notifications/NotificationsContext'
-import { Button, Icon, Div } from '../styled/styled-semantic'
-import { Route, Link, matchPath } from 'react-router-dom';
-
-const Header = styled.div`
-	display: flex;
-	align-items: center;
-	height: 52px;
-	padding: 0 2rem;
-	font-size: 1.28571429rem;
-	line-height: 1.28571429em;
-	font-weight: bold;
-	border-bottom: 1px solid rgba(34,36,38,.15);
-`
-
-const SLink = styled(Link)`
-  color: rgba(0,0,0,.87) !important;
-`
+import { Button, Icon } from '../styled/styled-semantic'
+import { Route, Link, matchPath } from 'react-router-dom'
+import Menu from '../Menu'
 
 const Container = styled.div`
-  height: calc(100% - 52px);
+  height: calc(100% - 36px);
   display: flex;
   flex-direction: column;
   padding: 1rem;
@@ -47,7 +33,9 @@ const BottomSection = styled.div`
   margin-top: 1rem;
 `
 
-export default () => {
+export default ({
+  refreshToken
+}) => {
   const [activePayment, setActivePayment] = useState(null)
   return (
     <NotificationsConsumer>
@@ -68,7 +56,7 @@ export default () => {
                 orgs,
                 accounts,
                 equipments: equipment
-              },
+              } = {},
               refetch: refetchPayments
             }) => <>
               <Mutation
@@ -86,33 +74,45 @@ export default () => {
                   content: err.message,
                 })}
               >
-                {(syncWithTochkaPayments, { loading }) => 
-                  <Header>
-                    <SLink to="/pay">Платежи</SLink>
-                    <Div
-                      ml='40px'
+                {(syncWithTochkaPayments, { loading }) =>
+                  <Menu
+                    title='Платежи'
+                    titleLinkTo='/pay'
+                    refreshToken={refreshToken}
+                  >
+                    <Button compact circular menu
+                      w='120px'
+                      ml='0'
+                      ta='left'
+                      activeColor='blue' 
+                      onClick={syncWithTochkaPayments}
                     >
-                      <SLink to="/pay/chart">
-                        <Icon
-                          link
-                          name='chart bar outline'
-                          size='large'
-                          active={!!matchPath(
-                            window.location.href.replace(/.*#/, ''),
-                            '/pay/chart'
-                          )}
-                          activeColor='blue'
-                        />
-                      </SLink>
-                    </Div>
-                    <Button
-                      ml='auto'
-                      icon='sync alternate'
-                      content='Точка Банк'
-                      onClick={() => syncWithTochkaPayments()}
-                      loading={loading}
-                    />
-                  </Header>
+                      <Icon
+                        name='refresh'
+                        color={loading ? 'blue' : undefined} 
+                        loading={loading}
+                      />
+                      {loading ? 'Загрузка..' : 'Точка Банк'}
+                    </Button>
+                    <Link to={
+                      !!matchPath(
+                        window.location.href.replace(/.*#/, ''),
+                        '/pay/chart'
+                      )
+                        ? '/pay'
+                        : '/pay/chart'
+                    }>
+                      <Button compact circular menu
+                        activeColor='green'
+                        icon='chart bar outline'
+                        content='График'
+                        active={!!matchPath(
+                          window.location.href.replace(/.*#/, ''),
+                          '/pay/chart'
+                        )}
+                      />
+                    </Link>
+                  </Menu>
                 }
               </Mutation>
               <Container>

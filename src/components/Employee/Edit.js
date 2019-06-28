@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 
-import DetailsHeader from '../DetailsHeader'
+import DetailsHeader from '../DetailsOld/DetailsHeader'
 import EmployeeForm from './Form'
 import { Div } from '../styled/styled-semantic'
 

@@ -1,4 +1,5 @@
 import gql from 'graphql-tag'
+import { opTypeFragmentBasic } from './opType'
 
 export const orgFragmentBasic = gql`
 	fragment OrgFragmentBasic on Org {
@@ -6,6 +7,26 @@ export const orgFragmentBasic = gql`
 		inn
 		name
 	}
+`
+
+export const orgFragmentFull = gql`
+	fragment OrgFragmentFull on Org {
+		...OrgFragmentBasic
+	}
+	${orgFragmentBasic}
+`
+
+
+export const orgExecFragment = gql`
+	fragment orgExecFragment on Org {
+		id
+		name
+		exec {
+			id
+			opTypes { ...opTypeFragmentBasic }
+		}
+	}
+	${opTypeFragmentBasic}
 `
 
 export const org = gql`
@@ -26,6 +47,14 @@ export const allOrgs = gql`
 	${orgFragmentBasic}
 `
 
+export const createContract = gql`
+	mutation createContract($id: ID!, $date: String) {
+		createContract(id: $id, date: $date) {
+			statusText
+		}
+	}
+`
+
 export const createOrg = gql`
 	mutation createOrg($inn: String!) {
 		createOrg(inn: $inn) {
@@ -35,11 +64,38 @@ export const createOrg = gql`
 	${orgFragmentBasic}
 `
 
+export const mergeOrg = gql`
+	mutation mergeOrg($id: ID!, $inn: String!) {
+		mergeOrg(id: $id, inn: $inn) {
+			...OrgFragmentFull
+		}
+	}
+	${orgFragmentFull}
+`
+
 export const orgLocal = gql`
 	query OrgLocal ($id: ID!) {
 		orgLocal (id: $id) {
-			id
-			name
+			...OrgFragmentBasic
 		}
 	}
+	${orgFragmentBasic}
+`
+
+export const orgDetails = gql`
+	query orgDetails ($id: ID!) {
+		orgDetails (id: $id) {
+			...OrgFragmentFull
+		}
+	}
+	${orgFragmentFull}
+`
+
+export const upsertOrgExec = gql`
+	mutation upsertOrg($input: OrgInput!) {
+		upsertOrg(input: $input) {
+			...orgExecFragment
+		}
+	}
+	${orgExecFragment}
 `

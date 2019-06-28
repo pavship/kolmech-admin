@@ -1,21 +1,26 @@
-import React, { Fragment } from 'react'
-import { getIn, connect, FieldArray } from 'formik'
+import React from 'react'
 import styled from 'styled-components'
 
-import FormikInput from './FormikInput'
-import FormikTel from './FormikTel'
+import HtmlDatePicker from '../common/HtmlDatePicker'
+import HtmlInput from '../common/HtmlInput'
+import { HtmlTextArea } from '../common/HtmlTextArea'
+import HtmlSelect from '../common/HtmlSelect';
 
 const Container = styled.div`
 	display: flex;
 	flex-wrap: wrap;
+	align-items: center;
 	margin-bottom: .67857143rem;
+	${props => props.indent && `
+		border-left: 1px solid rgba(34, 36, 38, 0.15);
+	`}
 `
 
 const Label = styled.div`
 	flex: 0 0 122px;
-	padding-top: calc(10.5rem/14);
+	/* padding-top: calc(10.5rem/14); */
 	font-size: calc(13rem/14);
-	font-weight: bold;
+	/* font-weight: bold; */
 	line-height: 1.21428571rem;
 	${props => props.required && `
 		::after {
@@ -26,6 +31,9 @@ const Label = styled.div`
 			color: #db2828;
 		}
 	`}
+	${props => props.indent && `
+		padding-left: 10px;
+	`}
 `
 
 const Content = styled.div`
@@ -34,71 +42,60 @@ const Content = styled.div`
 `
 
 const InputContainer = styled.div`
-	max-width: 240px;
+	width: 215px;
 `
 
 const Error = styled.div`
 	color: ${props => props.theme.colors.error};
 `
 
-const Field = ({
+export default ({
 	label,
 	required,
-	name,
+	indent,
 	type,
-	formik,
-	inputLabel,
 	contentBeforeField,
+	error,
 	...rest
 }) => {
-	const isArray = name === 'person.tels'
-	// const component = data =>
-	//   type === 'string' ? data :
-	//   type === 'tel' ? <FormikTel tel={data} />
-	//   : null
 	return (
-		<Container>
+		<Container
+			indent={indent}
+		>
 			<Label
 				className='fz-formFieldLabel'
 				required={required}
+				indent={indent}
 			>
 				{label}
 			</Label>
 			<Content>
-				{isArray
-					? <FieldArray
-							name={name}
-							render={arrayHelpers => (
-								<>
-									{getIn(formik.values, name).map((_, i) => 
-										<Fragment
-											key={i}
-										>
-											<FormikTel
-												baseName={`${name}.${i}`}
-											/>
-										</Fragment>
-									)}
-								</>
-							)}
-						/>
-					: <>
-							<InputContainer>
-								{contentBeforeField}
-								<FormikInput
-									{...rest}
-									name={name}
-									type={type}
-								/>
-							</InputContainer>
-							<Error>
-								{getIn(formik.touched, name) ? getIn(formik.errors, name) : ''}
-							</Error>
-						</>
+				<InputContainer>
+					{contentBeforeField}
+					{	type === 'date' || type === 'datetime-local'
+						? <HtmlDatePicker
+								type={type}
+								{...rest}
+							/> :
+						type === 'textarea'
+						? <HtmlTextArea
+								{...rest}
+							/> :
+						type === 'select'
+						? <HtmlSelect
+								{...rest}
+							/>
+						: <HtmlInput
+								{...rest}
+							/>
+					}
+				</InputContainer>
+				{error &&
+					<Error>
+						{error}
+					</Error>
 				}
 			</Content>
 		</Container>
 	)
 }
-
-export default connect(Field)

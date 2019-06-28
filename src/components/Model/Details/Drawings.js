@@ -11,11 +11,11 @@ import styled from 'styled-components'
 import posed, { PoseGroup } from 'react-pose'
 import { Loader } from 'semantic-ui-react'
 import { Icon, Button, Span } from '../../styled/styled-semantic'
-import CollapsableSection from '../../CollapsableSection'
+import CollapsableSection from '../../presentational/CollapsableSection'
 import SortableDrawingsList from './Drawings/Sortable'
 import SortedCollectionProvider from './Drawings/SortedCollectionProvider'
-import StatefulList from '../../special/StatefulList'
-import StatefulBool from '../../special/StatefulBool'
+import StatefulList from '../../context/StatefulList'
+import StatefulBool from '../../context/StatefulBool'
 
 const DropzoneArea = styled.div`
   position: relative;

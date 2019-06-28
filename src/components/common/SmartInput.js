@@ -7,7 +7,7 @@ import { isNaN } from '../../utils/format'
 // TODO think about integrating other input types (currency, etc..)
 class SmartInput extends Component {
 	state = {
-		value: this.props.field.curVal || ''
+		value: (this.props.field && this.props.field.curVal) || ''
 	}
 	input = createRef()
 	debouncedSetField = debounce(value => {

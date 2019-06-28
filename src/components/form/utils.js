@@ -1,3 +1,5 @@
+import produce from 'immer'
+
 export const projectEntity = (entity, schema) => {
 	let result = {}
 	handleObj(schema, entity, result)
@@ -66,4 +68,113 @@ const handlePayloadArr = (arrSchema, initialArr, arr, resultArr) => {
 			handlePayloadObj(arrSchema[0], initialArr[i], obj, resultArr[i] = {})
 		)
 	}
+}
+
+export const getStructure = obj => {
+	const result = {}
+	getSkeleton(obj, result)
+	return result
+}
+
+const getSkeleton = (obj, result) => {
+	// preserve ids of entity objects
+	Object.keys(obj).forEach(k => {
+		if (k === 'id')
+			return result.id = obj.id
+		if (obj[k] === null)
+			// return result[k] = {}
+			return
+		const type = typeof obj[k]
+		if (type === 'object' && Array.isArray(obj[k]))
+			return result[k] = getArrSkeleton(obj[k])
+		if (type === 'object')
+			return getSkeleton(obj[k], result[k] = {})
+	})
+}
+
+const getArrSkeleton = arr => arr
+	.filter(item => typeof item === 'object')
+	.map(obj => {
+		const result = {}
+		getSkeleton(obj, result)
+		return result
+	})
+
+const analysePath = (path, acc = []) => {
+	const dotPos = path.indexOf('.')
+	const braketPos = path.indexOf('[')
+	if (path === '') {
+		acc[acc.length - 1].last = true
+		return acc
+	}
+	if (dotPos*braketPos === 1) return [
+		...acc, {
+		key: path,
+		last: true
+	}]
+	if (braketPos === -1 || dotPos + 1 && dotPos < braketPos) return analysePath(
+		path.slice(dotPos + 1), [
+			...acc, {
+				key: path.slice(0, dotPos)
+			}
+	])
+	if (dotPos === -1 || braketPos + 1 && braketPos < dotPos) {
+		const closingBraketPos = path.indexOf(']')
+		return analysePath(
+			path.slice(closingBraketPos + 2), [
+				...acc, {
+					key: path.slice(0, braketPos),
+					array: true
+				}, {
+					key: path.slice(braketPos + 1, closingBraketPos),
+					arrayItem: true
+				}
+		])
+	}
+}
+
+export const assignNested = (obj, path, val, preserveKeys=false) => {
+	const keys = analysePath(path)
+	keys.reduce((obj, { key, last, array, arrayItem }) => {
+		Object.keys(obj).forEach(k => {
+			if (k === 'id' || k === key) return
+			if (!preserveKeys) {
+				if (arrayItem) obj[k] = { id: obj[k].id }
+				else delete obj[k]
+			}
+		})
+		if (last) {
+			if (arrayItem && key === 'length') return obj[obj.length] = val
+			return obj[key] = val
+		}
+		if (!obj[key]) {
+			if (array) obj[key] = []
+			else obj[key] = {}
+		}
+		return obj[key]
+	}, obj)
+}
+
+export const produceNested = (obj, path, val, preserveKeys=false) => {
+	const keys = analysePath(path)
+	return produce(obj, obj => {
+		keys.reduce((obj, { key, last, array, arrayItem }) => {
+			Object.keys(obj).forEach(k => {
+				if (k === 'id' || k === key) return
+				if (!preserveKeys) {
+					if (arrayItem) obj[k] = { id: obj[k].id }
+					else delete obj[k]
+				}
+			})
+			if (last) {
+				if (arrayItem && key === 'length') return obj[obj.length] = val
+				return obj[key] = val
+			}
+			if (!obj[key]) {
+				if (array) obj[key] = []
+				else obj[key] = {}
+			}
+			return obj[key]
+		}, obj)
+	})
 }

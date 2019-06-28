@@ -7,7 +7,7 @@ import { orgLocal } from '../../graphql/org'
 import styled from 'styled-components'
 import { Header, Button, Icon } from '../styled/styled-semantic'
 
-import GlobalContext from '../special/GlobalContext'
+import GlobalContext from '../context/GlobalContext'
 
 const MenuDiv = styled.div`
 	display: flex;

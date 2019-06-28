@@ -23,6 +23,8 @@ const cache = new InMemoryCache({
 	},
 	cacheRedirects: {
 		Query: {
+			dealLocal: (_, args, { getCacheKey }) =>
+				getCacheKey({ __typename: 'Deal', id: args.id }),
 			orgLocal: (_, args, { getCacheKey }) =>
 				getCacheKey({ __typename: 'Org', id: args.id }),
 			enquiryLocal: (_, args, { getCacheKey }) =>

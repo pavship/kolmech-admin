@@ -1,7 +1,7 @@
 import React from 'react'
 
 import { Div, Icon } from '../styled/styled-semantic'
-import DetailsHeader from '../DetailsHeader'
+import DetailsHeader from '../DetailsOld/DetailsHeader'
 import List from '../list/List'
 import { listSchema } from '../../schema/employee'
 

@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import React, { Component, useContext, useMemom, useCallback } from 'react'
 import produce from 'immer'
 import cuid from 'cuid'
 
@@ -32,7 +32,7 @@ export class NotificationsProvider extends Component {
       <NotificationsContext.Provider
         value={{
           state: this.state,
-          create: this.create,
+          notify: this.create,
           dismiss: this.dismiss,
           cancelAutoDismiss: this.cancelAutoDismiss
         }}
@@ -45,7 +45,7 @@ export class NotificationsProvider extends Component {
 
 export const NotificationsConsumer = ({ children }) => (
   <NotificationsContext.Consumer>
-    {({ create: notify }) =>
+    {({ notify }) =>
       <PureChild notify={notify} >
         {children}
       </PureChild>
@@ -55,4 +55,11 @@ export const NotificationsConsumer = ({ children }) => (
 
 const PureChild = React.memo(({ notify, children }) => children({ notify }))
 
+export const useNotifications = () => {
+  const { notify } = useContext(NotificationsContext)
+  return {
+    // notify: useMemo(notify, [])
+    notify: useCallback((msg) => notify(msg), [])
+  }
+}
 

@@ -1,7 +1,7 @@
 import React from 'react'
 import { formatTel } from '../../utils/format'
 
-import GlobalContext from '../special/GlobalContext'
+import GlobalContext from '../context/GlobalContext'
 
 import Table from '../common/Table'
 import TableRow from '../common/TableRow'

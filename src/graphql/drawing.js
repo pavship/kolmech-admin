@@ -4,6 +4,7 @@ import { fileFragmentFull } from './file'
 export const drawingFragmentBasic = gql`
 	fragment DrawingFragmentBasic on Drawing {
 		id
+		name
 		sortOrder
 	}
 `

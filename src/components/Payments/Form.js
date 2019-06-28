@@ -7,7 +7,7 @@ import { syncWithAmoContacts } from '../../graphql/amo'
 import { Formik } from 'formik'
 import { projectEntity, preparePayload } from '../form/utils'
 import { formikSchema, validationSchema } from '../../schema/payment'
-import Field from '../form/Field'
+import Field from '../form/FormikField'
 
 import { NotificationsConsumer } from '../notifications/NotificationsContext'
 
@@ -15,7 +15,6 @@ import styled from 'styled-components'
 import { Button, A, Div } from '../styled/styled-semantic'
 import { persons } from '../../graphql/person'
 import produce from 'immer'
-import { fromLocalISOString } from '../../utils/dates'
 import { createOrg } from '../../graphql/org'
 
 const Container = styled.div`

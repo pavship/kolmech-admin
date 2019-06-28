@@ -27,11 +27,13 @@ const fields = [{
   name: 'article',
   path: 'article.rusName',
 	title: 'Статья',
-	width: '180px'
+	width: '180px',
+  truncated: true
 },{
   name: 'counterparty',
   title: 'Контрагент',
-  width: '200px'
+  width: '200px',
+  truncated: true
 },{
   name: 'equipment',
   path: 'equipment.name',
