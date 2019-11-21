@@ -11,6 +11,7 @@ export const formatTel = ({ number, country }) => {
 }
 
 export const currency = (num, trailing) => {
+	if (!num && num !== 0) return  '- ₽'
 	let curNum = (num).toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$& ').replace(/\./, ',')
 	if (!trailing) curNum = curNum.slice(0,-3)
 	return curNum + ' ₽'

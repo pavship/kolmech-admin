@@ -11,14 +11,12 @@ import GlobalContext from '../context/GlobalContext'
 const EnquiriesMenu = ({
 	refetchEnquiries,
 	enquiriesAreLoading,
-	refreshToken
 }) => {
 	return (
 		<GlobalContext>
 			{({ details, setDetails }) => (
 				<Menu
 					title='Заявки и заказы'
-					refreshToken={refreshToken}
 				>
 					<Button compact circular menu
 						w='118.5px'

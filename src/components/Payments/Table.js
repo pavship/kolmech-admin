@@ -24,15 +24,20 @@ const fields = [{
 	title: 'Дата и время',
 	width: '145px'
 },{
+  name: 'counterparty',
+  title: 'Контрагент',
+  width: '200px',
+  truncated: true
+},{
+  name: 'project',
+	title: 'Проект',
+	width: '230px',
+  truncated: true
+},{
   name: 'article',
   path: 'article.rusName',
 	title: 'Статья',
 	width: '180px',
-  truncated: true
-},{
-  name: 'counterparty',
-  title: 'Контрагент',
-  width: '200px',
   truncated: true
 },{
   name: 'equipment',
@@ -53,9 +58,10 @@ const fields = [{
 }]
 
 export default ({
-  payments,
   activePayment,
-  onClickRow
+  mpProjects,
+  onClickRow,
+  payments,
 }) => {
   //  TODO add CollectionUtils to support sorting
   return (
@@ -92,6 +98,10 @@ export default ({
                   {
                     name: 'counterparty',
                     path: person ? 'person.amoName' : 'org.name',
+                  },
+                  {
+                    name: 'project',
+                    value: payment.mpProjectId ? mpProjects.find(mp => mp.Id === payment.mpProjectId).Name : '',
                   },
                   {
                     name: 'amount',

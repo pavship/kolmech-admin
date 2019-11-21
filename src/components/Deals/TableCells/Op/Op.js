@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React from 'react'
 import cuid from 'cuid'
 
 import styled from 'styled-components'
@@ -10,8 +10,31 @@ import { Dropdown } from 'semantic-ui-react'
 import Appoint from '../Appoint/Appoint'
 import { assignNested } from '../../../form/utils'
 
-const FlexContainer = styled.div`
+const Wrapper = styled.div`
   display: flex;
+`
+
+const TitleContainer = styled(Div)`
+  display: flex;
+`
+
+const Title = styled.div`
+  position: relative;
+  /* width: 100%; */
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  ${TitleContainer}:hover & {
+    ${props => !props.isNew && 'width: 140px;'}
+    ${props => !props.isNew && props.isMachiningClass && 'width: 140px;'}
+  }
+`
+
+const Menu = styled.div`
+  display: none;
+  margin-left: auto;
+  ${TitleContainer}:hover & {
+    display: unset;
+  }
 `
 
 const WarningItem = styled(Dropdown.Item)`
@@ -24,81 +47,84 @@ const WarningItem = styled(Dropdown.Item)`
 `
 
 export const Op = ({
-  basePath = '',
+  basePath,
   op,
   opClass,
   opIndex,
-  upsertBatch
+  upsertBatch,
+  deleteElement,
+  budgetMode
 }) => {
-  const { isNew, appoints, opType, dealLabor } = op
-  const isMachiningClass = basePath.startsWith('procs')
-  const [isHovered, setIsHovered] = useState(false)
-  return <>
-    <FlexContainer>
-      <Div
-        d='flex'
-        w={isMachiningClass ? '130px' : '170px'}
-        onMouseEnter={() => setIsHovered(true)}
-        onMouseLeave={() => setIsHovered(false)}
+  const { id, isNew, appoints, opType, dealLabor } = op
+  const isMachiningClass = basePath.endsWith('proc.')
+  return <Wrapper>
+    <TitleContainer
+      d='flex'
+      w={isMachiningClass ? '125px' : '170px'}
+    >
+      <Title
+        isNew={isNew}
+        isMachiningClass={isMachiningClass}
       >
-        <Div
-          w={!isNew && isHovered ? (isMachiningClass ? '100px' : '140px') : '100%'}
-          whs='nowrap'
-          to='ellipsis'
-          pos='relative'
-        >
-          <OpType
-            basePath={basePath}
-            opType={opType}
-            opClass={opClass}
-            isNewOp={isNew}
-            upsertBatch={upsertBatch}
-          />
-        </Div>
-        {!isNew && isHovered &&
+        <OpType
+          path={basePath + (isMachiningClass ? `ops[length]` : 'op')}
+          opType={opType}
+          opClass={opClass}
+          isNewOp={isNew}
+          upsertBatch={upsertBatch}
+        />
+      </Title>
+      {!isNew &&
+        <Menu>
           <DropdownMenu>
             <WarningItem
               icon='trash'
               text='Удалить'
-              onClick={() => upsertBatch(draft => {
-                assignNested(draft, basePath + `ops[${opIndex}]`, {})
-              })}
+              onClick={isMachiningClass
+                ? () => upsertBatch(draft => {
+                    assignNested(draft, basePath + `ops[id=${id}]`, {})
+                  })
+                : deleteElement}
             />
           </DropdownMenu>
-        }
+        </Menu>
+      }
+    </TitleContainer>
+    {!isNew && isMachiningClass &&
+      <Div
+        w='45px'
+        bl='1px solid rgba(34,36,38,0.15)'
+      >
+        <DealLabour
+          basePath={`${basePath}ops[id=${id}].`}
+          dealLabor={dealLabor}
+          opIndex={opIndex}
+          upsertBatch={upsertBatch}
+        />
       </Div>
-      {!isNew && isMachiningClass &&
-        <Div
-          w='40px'
-          bl='1px solid rgba(34,36,38,0.15);'
-        >
-          <DealLabour
-            dealLabor={dealLabor}
+    }
+    {!isNew &&
+      <Div
+        // w={`calc(170px + 90px${budgetMode ? ' + 670px' : ''})`}
+        // w={budgetMode ? '930px' : '260px'}
+        bl='1px solid rgba(34,36,38,0.15)'
+      >
+        {[
+          ...appoints,
+          { id: cuid(), isNew: true }
+        ].map((appoint, i) =>
+          <Appoint
+            key={appoint.id}
+            basePath={basePath + (isMachiningClass ? `ops[id=${id}].` : 'op.')}
+            appoint={appoint}
+            appointIndex={i}
+            op={op}
             opIndex={opIndex}
             upsertBatch={upsertBatch}
+            budgetMode={budgetMode}
           />
-        </Div>
-      }
-      {!isNew && 
-        <Div
-          w='170px'
-        >
-          {[
-            ...appoints,
-            { id: cuid(), isNew: true }
-          ].map((appoint, i) =>
-            <Appoint
-              key={appoint.id}
-              basePath={basePath}
-              appoint={appoint}
-              appointIndex={i}
-              op={op}
-              opIndex={opIndex}
-              upsertBatch={upsertBatch}
-            />
-          )}
-        </Div>
-      }
-    </FlexContainer>
-  </>
+        )}
+      </Div>
+    }
+  </Wrapper>
 }

@@ -6,16 +6,16 @@ import HtmlSelect from '../../../common/HtmlSelect'
 import { assignNested } from '../../../form/utils'
 
 export default function OpType ({
-  basePath,
+  path,
   isNewOp,
   opClass,
-  opType = {},
+  opType: { id: opTypeId, name, laborPrice } = {},
   upsertBatch
 }) {
-  const { id: opTypeId, name } = opType
   const { opTypes } = useContext(DealsContext)
   const inputRef = useRef(null)
   const [ editMode, setEditMode ] = useState(false)
+  const isMachiningClass = opClass === 'MACHINING'
   useEffect(() => (editMode &&
     inputRef.current &&
     inputRef.current.focus()) || undefined)
@@ -25,14 +25,17 @@ export default function OpType ({
       value={opTypeId}
       options={opTypes.filter(ot => ot.opClass === opClass)}
       onChange={opTypeId => upsertBatch(draft => {
-        assignNested(draft, basePath + 'ops[length]', { opTypeId })
+        const laborPrice = opTypes.find(opt => opt.id === opTypeId).laborPrice
+        assignNested(draft, path, {
+          opTypeId,
+          ...laborPrice && { laborPrice }
+        })
       })}
       onBlur={() => setEditMode(false)}
     />
   else if (isNewOp)
     return <Icon
-      ml='6px'
-			// color='grey'
+      ml={isMachiningClass ? '6px' : undefined}
 			c='rgba(50,50,50,.87)'
       link
       name='plus'
@@ -42,7 +45,7 @@ export default function OpType ({
     return <Div
       ov='hidden'
 			to='ellipsis'
-			pl='6px'
+			pl={isMachiningClass ? '6px' : undefined}
     >
       {name}
     </Div>

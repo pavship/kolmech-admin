@@ -55,6 +55,14 @@ export const createContract = gql`
 	}
 `
 
+export const createPostEnvelopeAddressInsert = gql`
+	mutation createPostEnvelopeAddressInsert($orgId: ID!) {
+		createPostEnvelopeAddressInsert(orgId: $orgId) {
+			statusText
+		}
+	}
+`
+
 export const createOrg = gql`
 	mutation createOrg($inn: String!) {
 		createOrg(inn: $inn) {

@@ -61,7 +61,7 @@ export const personExec = gql`
 	${personExecFragment}
 `
 
-export const upsertPerson2 = gql`
+export const upsertPersonExec = gql`
 	mutation upsertPerson2($input: PersonInput!) {
 		upsertPerson2(input: $input) {
 			...personExecFragment

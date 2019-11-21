@@ -135,16 +135,34 @@ const analysePath = (path, acc = []) => {
 
 export const assignNested = (obj, path, val, preserveKeys=false) => {
 	const keys = analysePath(path)
+	console.log('keys > ', keys)
 	keys.reduce((obj, { key, last, array, arrayItem }) => {
-		Object.keys(obj).forEach(k => {
-			if (k === 'id' || k === key) return
-			if (!preserveKeys) {
-				if (arrayItem) obj[k] = { id: obj[k].id }
-				else delete obj[k]
-			}
-		})
+		console.log('obj > ', JSON.stringify(obj, null, 2))
+		!preserveKeys &&
+			Object.keys(obj)
+				.filter(k => !(
+					k === 'id'
+					|| k === key
+					|| key.startsWith('id=') && obj[k].id === key.slice(3)
+				))
+				.forEach(k => {
+					if (arrayItem) obj[k] = { id: obj[k].id }
+					else delete obj[k]
+				})
+		if (arrayItem && key === 'length' && !last) {
+			obj[obj.length] = {}
+			return obj[obj.length - 1]
+		}
+		if (key.startsWith('id=') && !last)
+			return obj.find(i => i.id === key.slice(3))
 		if (last) {
-			if (arrayItem && key === 'length') return obj[obj.length] = val
+			if (arrayItem && key === 'length')
+				return obj[obj.length] = val
+			if (key.startsWith('id='))
+				return obj[obj.findIndex(i => i.id === key.slice(3))] = {
+					...Object.keys(val).length > 0 && {id: key.slice(3)},
+					...val
+				}
 			return obj[key] = val
 		}
 		if (!obj[key]) {

@@ -4,12 +4,14 @@ export const DealsContext = React.createContext()
 
 export const DealsContextProvider = ({
   children,
-  opTypes
+  opTypes,
+  budgetMode
 }) => {
   return (
     <DealsContext.Provider
       value={{
-        opTypes
+        opTypes,
+        budgetMode
       }}
     >
       {children}

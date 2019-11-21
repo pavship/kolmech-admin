@@ -14,6 +14,7 @@ export const opFragmentBasic = gql`
 export const opFragmentMiddle = gql`
 	fragment opFragmentMiddle on Op {
 		...opFragmentBasic
+		laborPrice
 		appoints { ...appointFragmentMiddle }
 	}
 	${opFragmentBasic}

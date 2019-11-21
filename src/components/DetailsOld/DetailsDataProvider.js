@@ -1,4 +1,5 @@
-import { compose, graphql } from 'react-apollo'
+import { graphql } from 'react-apollo'
+import * as compose from 'lodash.flowright'
 
 import { enquiryDetails, enquiryLocal } from '../../graphql/enquiry'
 import { orderDetails, orderLocal } from '../../graphql/order'

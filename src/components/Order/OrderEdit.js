@@ -3,7 +3,8 @@ import React, { Component, Fragment } from 'react'
 import { Form, Button, Message } from 'semantic-ui-react'
 import { Div, Span, A, Label, Section } from '../styled/styled-semantic.js'
 
-import { graphql, compose } from 'react-apollo'
+import { graphql } from 'react-apollo'
+import * as compose from 'lodash.flowright'
 import { orderLocal, upsertOrder } from '../../graphql/order'
 import { allEnquiries } from '../../graphql/enquiry'
 

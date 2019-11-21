@@ -1,4 +1,5 @@
 import gql from 'graphql-tag'
+import { execFragmentBasic } from './exec'
 
 export const taskFragmentBasic = gql`
 	fragment taskFragmentBasic on Task {
@@ -10,10 +11,11 @@ export const taskFragmentMiddle = gql`
 	fragment taskFragmentMiddle on Task {
 		...taskFragmentBasic
     end
-    from
-    status
+		from
+		order
+		status
+		text
     to
-    exec { id }
   }
   ${taskFragmentBasic}
 `
@@ -21,16 +23,25 @@ export const taskFragmentMiddle = gql`
 export const taskFragmentFull = gql`
 	fragment taskFragmentFull on Task {
 		...taskFragmentMiddle
-    text
-  }
+    appoint {
+			id
+			exec { ...execFragmentBasic }
+		}
+	}
+	${execFragmentBasic}
   ${taskFragmentMiddle}
 `
 
 export const taskDetails = gql`
 	query task ($id: ID!) {
-		task (id: $id) {
-			...taskFragmentFull
-		}
+		task (id: $id) { ...taskFragmentFull }
+	}
+	${taskFragmentFull}
+`
+
+export const tasksDetails = gql`
+	query tasks {
+		tasks { ...taskFragmentFull }
 	}
 	${taskFragmentFull}
 `
@@ -38,8 +49,8 @@ export const taskDetails = gql`
 export const upsertTask = gql`
 	mutation upsertTask($input: TaskInput!) {
 		upsertTask(input: $input) {
-			...taskFragmentMiddle
+			...taskFragmentFull
 		}
 	}
-	${taskFragmentMiddle}
+	${taskFragmentFull}
 `

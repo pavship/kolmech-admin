@@ -9,27 +9,24 @@ const Select = styled.select`
 `
 
 export default forwardRef(({
-  // value: propValue,
   value,
   onChange,
   options,
+  undefinedOptionName = '--',
 	...rest
 }, ref) => {
-  // const [ value, setValue ] = useState(0)
-  // useEffect(() => setValue(propValue || 0), [propValue])
-  // const submit = () => propValue !== value && onChange(value)
 	return (
     <Select
       {...rest}
       ref={ref}
       value={value}
       onChange={({ target: { value }}) => onChange(value)}
-      // onChange={({ target: { value }}) => console.log('value > ', value) || setValue(value)}
-      // onBlur={submit}
-      // onKeyDown={e => e.key === 'Enter' && submit()}
-      // onBlur={() => console.log('ref.current > ', ref.current.blur())}
     >
-      {[{ id: 0, name: '' }, ...options].map(({ key, id, name }) =>
+      {[
+        // ...hasNoUndefinedOption ? [] : [{ id: -1, name: '--' }],
+        { id: -1, name: undefinedOptionName },
+        ...options
+      ].map(({ key, id, name }) =>
         <option key={key || id} value={id}>{name}</option>
       )}}
     </Select>

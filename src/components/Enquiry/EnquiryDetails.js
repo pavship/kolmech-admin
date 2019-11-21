@@ -7,7 +7,8 @@ import { Header as SHeader, Icon, Label, Form, Comment,
 	Message, Dropdown } from 'semantic-ui-react'
 import { P, Div, Button, Section } from '../styled/styled-semantic'
 
-import { graphql, compose } from 'react-apollo'
+import { graphql } from 'react-apollo'
+import * as compose from 'lodash.flowright'
 import { enquiryDetails, newEnquiry, createEnquiryEvent, 
 	enquiryFragment, allEnquiries, updateEnquiry } from '../../graphql/enquiry'
 

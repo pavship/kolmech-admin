@@ -42,7 +42,7 @@ const Content = styled.div`
 `
 
 const InputContainer = styled.div`
-	width: 215px;
+	width: ${props => props.width || '215px'};
 `
 
 const Error = styled.div`
@@ -53,6 +53,7 @@ export default ({
 	label,
 	required,
 	indent,
+	inputWidth,
 	type,
 	contentBeforeField,
 	error,
@@ -70,7 +71,9 @@ export default ({
 				{label}
 			</Label>
 			<Content>
-				<InputContainer>
+				<InputContainer
+					width={inputWidth}
+				>
 					{contentBeforeField}
 					{	type === 'date' || type === 'datetime-local'
 						? <HtmlDatePicker

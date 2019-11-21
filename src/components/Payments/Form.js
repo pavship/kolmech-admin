@@ -61,17 +61,21 @@ const CounterpartyFieldSwitch = ({
 }
 
 export default ({
-	payment,
-	reset,
 	articles,
+	equipment,
+	mpProjects,
 	orgs,
-	equipment
+	reset,
+	payment,
 }) => {
 	let schema = formikSchema(new Date())
 	let initialValues = payment ? projectEntity(payment, schema) : schema
 	const formLabelWidth = '110px'
 	const articleOptions = articles.map(a => 
 		({ key: a.id, text: a.rusName, value: a.id })
+	)
+	const mpProjectOptions = mpProjects.map(p => 
+		({ key: p.Id, text: p.Id - 1000000 + '. ' + p.Name, value: p.Id })
 	)
 	const bankPayment = payment && payment.isIncome !== null
 	return (
@@ -182,6 +186,11 @@ export default ({
 														required
 														name='articleId'
 														options={articleOptions}
+													/>
+													<Field
+														label='Проект'
+														name='mpProjectId'
+														options={mpProjectOptions}
 													/>
 													{!bankPayment && (
 														<CounterpartyFieldSwitch

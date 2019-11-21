@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 
-import { graphql, compose } from 'react-apollo'
+import { graphql } from 'react-apollo'
+import * as compose from 'lodash.flowright'
 import { allEnquiries } from '../../graphql/enquiry'
 import { setLayout } from '../../graphql/layout'
 
@@ -10,9 +11,9 @@ import { Sidebar } from 'semantic-ui-react'
 import EnquiriesMenu from './EnquiriesMenu'
 import EnquiriesTable from './EnquiriesTable'
 import DetailsSidebar from '../DetailsOld/DetailsSidebar'
-import PanelPusher from '../common/PanelPusher';
-import EnquiriesBottomPanel from './EnquiriesBottomPanel';
-import GlobalContext from '../context/GlobalContext';
+import PanelPusher from '../common/PanelPusher'
+import EnquiriesBottomPanel from './EnquiriesBottomPanel'
+import GlobalContext from '../context/GlobalContext'
 
 const Pushable = styled(Sidebar.Pushable)`
 	min-height: calc(100vh - 36px) !important;
@@ -32,14 +33,12 @@ export class EnquiriesPage extends Component {
 	render() {
 		const {
 			allEnquiries: { loading, error, refetch, enquiries },
-			refreshToken
 		} = this.props
 		const { panelClosing } = this.state
 		return <>
 			<EnquiriesMenu
 				refetchEnquiries={() => refetch()}
 				enquiriesAreLoading={loading}
-				refreshToken={refreshToken}
 			/>
 			{loading && "Загрузка..."}
 			{error && `Ошибка ${error.message}`}

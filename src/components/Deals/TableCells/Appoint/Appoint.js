@@ -1,15 +1,48 @@
 import React, { useState, useContext } from 'react'
-import cuid from 'cuid'
-import { assignNested } from '../../../form/utils'
+import { useMutation } from '../../../hooks/apolloHooks'
+import { upsertAppoint as uAq } from '../../../../graphql/appoint'
+import { getStructure, assignNested } from '../../../form/utils'
+import produce from 'immer'
+
 import DetailsContext from '../../../Details/Provider'
 import styled from 'styled-components'
-import { Div } from '../../../styled/styled-semantic'
+import { Div, Icon } from '../../../styled/styled-semantic'
 import { DropdownMenu } from '../DropdownMenu'
 import { Dropdown } from 'semantic-ui-react'
 import ExecName from '../Exec/Name'
+import Task from '../../Task/Task'
+import BpStat from '../BpStat/BpStat'
 
-const FlexContainer = styled.div`
+const Container = styled.div`
+  position: relative;
+  width: 100%;
+  :not(:last-child) {
+    border-bottom: 1px solid rgba(34,36,38,0.15);
+  }
+`
+
+const TitleContainer = styled.div`
   display: flex;
+  width: 170px;
+`
+
+const HeaderContainer = styled.div`
+  display: flex;
+`
+
+const Title = styled(Div)`
+  width: 100%;
+  ${TitleContainer}:hover & {
+    width: 139px;
+  }
+`
+
+const Menu = styled.div`
+  display: none;
+  margin-left: auto;
+  ${TitleContainer}:hover & {
+    display: unset;
+  }
 `
 
 const WarningItem = styled(Dropdown.Item)`
@@ -24,87 +57,88 @@ const WarningItem = styled(Dropdown.Item)`
 export default function Appoint ({
   basePath,
   appoint,
-  appointIndex,
   op,
   opIndex,
   upsertBatch,
+  budgetMode
 }) {
-  const { opType: { id: opTypeId } } = op
-  const { id: appointId, isNew, exec } = appoint
+  // console.log('Appoint > ')
+  const { opType } = op
+  const { id: appointId, isNew, tasks, bpStat } = appoint
   const { setDetails } = useContext(DetailsContext)
-  const [isHovered, setIsHovered] = useState(false)
+  const [ upsertAppointProto ] = useMutation(uAq)
+  const upsertAnyAppoint = (appoint, draftHandler, options = {}) => console.log('options > ', options) ||
+    upsertAppointProto({ variables: { input:
+      produce(getStructure(appoint), draftHandler)
+    }, options})
+  const upsertAppoint = (draftHandler, options) =>
+    upsertAnyAppoint(appoint, draftHandler, options)
   return <>
-    <FlexContainer>
-      <Div
-        d='flex'
-        w='170px'
-        onMouseEnter={() => setIsHovered(true)}
-        onMouseLeave={() => setIsHovered(false)}
-      >
-        <Div
-          w={isHovered ? '140px' : '100%'}
-          whs='nowrap'
-          to='ellipsis'
-          pos='relative'
-        >
-          <ExecName
-            basePath={basePath}
-            appoint={appoint}
-            opIndex={opIndex}
-            opTypeId={opTypeId}
-            upsertBatch={upsertBatch}
+    <Container>
+      <HeaderContainer>
+        <TitleContainer>
+          <Title
+            whs='nowrap'
+            to='ellipsis'
+            pos='relative'
+          >
+            <ExecName
+              basePath={basePath}
+              appoint={appoint}
+              opIndex={opIndex}
+              opType={opType}
+              upsertBatch={upsertBatch}
+            />
+          </Title>
+              {!isNew &&
+            <Menu>
+              <DropdownMenu>
+                <WarningItem
+                  icon='remove'
+                  text='Открепить'
+                  onClick={() => upsertBatch(draft => {
+                    assignNested(draft, `${basePath}appoints[id=${appointId}]`, {})
+                  })}
+                />
+                <Dropdown.Item
+                  icon='plus'
+                  text='Задача'
+                  onClick={() => setDetails({ appoint, upsertAppoint, upsertAnyAppoint, type: 'tasks' })}
+                />
+              </DropdownMenu>
+            </Menu>
+          }
+        </TitleContainer>
+        {!isNew &&
+          <BpStat
+            bpStat={bpStat}
+            budgetMode={budgetMode}
+            upsertParent={upsertAppoint}
           />
-        </Div>
-        {!isNew && isHovered &&
-          <DropdownMenu>
-            <WarningItem
-              icon='remove'
-              text='Открепить'
-              onClick={() => upsertBatch(draft => {
-                assignNested(draft, basePath + `ops[${opIndex}].appoints[${appointIndex}]`, {})
-              })}
-              // }, { refetchQueries: [{ query: personExec, variables: { id: person.id } }] })}
-            />
-            <Dropdown.Item
-              icon='plus'
-              text='Задача'
-              onClick={() => setDetails({ op, execId: exec.id, type: 'createTask' })}
-            />
-          </DropdownMenu>
         }
-      </Div>
-      {/* // {!isNew &&
-      //   <Div
-      //     w='40px'
-      //     bl='1px solid rgba(34,36,38,0.15);'
-      //   >
-      //     <DealLabour
-      //       dealLabor={dealLabor}
-      //       opIndex={opIndex}
-      //       upsertBatch={upsertBatch}
-      //     />
-      //   </Div>
-      // }
-      // {!isNew &&
-      //   <Div
-      //     w='170px'
-      //   >
-      //     {[
-      //       ...execs,
-      //       { id: cuid(), isNew: true }
-      //     ].map((exec, i) =>
-      //       <Exec
-      //         key={exec.id}
-      //         basePath={basePath}
-      //         exec={exec}
-      //         execIndex={i}
-      //         op={op}
-      //         opIndex={opIndex}
-      //         upsertBatch={upsertBatch}
-      //       />
-      //     )}
-      //   </Div>
-      // } */}
-    </FlexContainer>
+      </HeaderContainer>
+      {tasks && tasks.map(task =>
+        <Task
+          key={task.id}
+          task={task}
+          upsertAppoint={upsertAppoint}
+        />
+      )}
+      {/* <Div
+        pos='absolute'
+        l='170px'
+        w='2000px'
+        h='100%'
+        pe='none'
+      >
+        {tasks && tasks.map(task =>
+          <Task
+            key={task.id}
+            task={task}
+          />
+        )}
+      </Div> */}
+    </Container>
+    {/* <Div></Div> */}
   </>
 }

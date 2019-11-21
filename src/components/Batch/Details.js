@@ -1,5 +1,5 @@
 import React from 'react'
-import { useMutation, useQuery } from '../hooks/apolloHooks'
+import { useQuery, useMutation } from '../hooks/apolloHooks'
 import { getStructure, produceNested } from '../form/utils'
 import { batchDetails, upsertBatch as uB } from '../../graphql/batch'
 import { Dimmer, Loader } from 'semantic-ui-react'
@@ -18,6 +18,7 @@ export default function BatchDetails ({
   if (!batchProp && loading)
     return <Dimmer active ><Loader>Загрузка..</Loader></Dimmer>
   const {
+    descript,
     info,
     warning,
     model: {
@@ -79,6 +80,14 @@ export default function BatchDetails ({
         value={hardness || ''}
         onChange={value => upsertBatch({ variables: { input:
           produceNested(batchStructure, 'workpiece.hardness', value)
+        }})}
+      />
+      <Field
+        label='Описание'
+        type='textarea'
+        value={descript || ''}
+        onChange={value => upsertBatch({ variables: { input:
+          produceNested(batchStructure, `descript`, value)
         }})}
       />
       <Field

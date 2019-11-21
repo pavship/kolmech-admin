@@ -7,13 +7,13 @@ import InnForm from './InnForm'
 import Requisites from './Requisites'
 import Contract from './Contract'
 
-export const OrgDetails = ({
+export default function OrgDetails ({
   details: {
-		id,
+		orgId: id,
 		section
   },
   setDetails
-}) => {
+}) {
   const { notify } = useNotifications()
   return <>
     <Query

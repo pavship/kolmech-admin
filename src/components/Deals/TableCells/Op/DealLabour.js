@@ -5,8 +5,8 @@ import { assignNested } from '../../../form/utils'
 import HtmlInput from '../../../common/HtmlInput'
 
 export default ({
+  basePath,
   dealLabor,
-  opIndex,
   upsertBatch,
 }) => {
   const inputRef = useRef(null)
@@ -18,18 +18,18 @@ export default ({
   ? <HtmlInput
     ref={inputRef}
     placeholder='0'
-    value={dealLabor}
+    value={dealLabor || ''}
     onChange={value => {
       upsertBatch(draft => {
-        assignNested(draft, `procs[0].ops[${opIndex}].dealLabor`, value)
+        assignNested(draft, `${basePath}dealLabor`, value)
       })
-      setEditMode(false)
     }}
+    onBlur={() => setEditMode(false)}
   />
   : <Div
       pl='4px'
       onClick={() => setEditMode(true)}
     >
-      {dealLabor}ч
+      {dealLabor} ч
     </Div>
 }

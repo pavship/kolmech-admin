@@ -1,27 +1,7 @@
-import { compose, graphql } from 'react-apollo'
+import { graphql } from 'react-apollo'
+import * as compose from 'lodash.flowright'
 import { getLayout, getLayoutOptions, setLayout, setExpanded } from '../../graphql/layout'
 import { getLists, getListsOptions, setList } from '../../graphql/lists'
-
-// const GlobalContext = React.createContext()
-
-// class GlobalContextProvider extends Component {
-// 	// setDetails = (details) => {
-// 	// 	this.props.setLayout({variables: { details }})
-// 	// }
-// 	render() {
-// 		const { children, getLayout: { details }, setLayout } = this.props
-// 		return (
-// 			<GlobalContext.Provider 
-// 				value={{
-// 					details,
-// 					setDetails: (details) => setLayout({variables: { details }})
-// 				}}
-// 			>
-// 				{children}
-// 			</GlobalContext.Provider>
-// 		)
-// 	}
-// }
 
 const GlobalContext = ({
 		children,
@@ -31,10 +11,6 @@ const GlobalContext = ({
 		lists: { selectedProdIds },
 		setList
 }) => {
-	// setLayout({ variables: { 
-	// 	details: {"type":"Order","id":"cjmzkpstb00170983jkb7bcbq"},
-	// 	extra: {"type":"Store","modelId":"cjcfy68q55d3x0149fcpq7l63","orderId":"cjmzkpstb00170983jkb7bcbq"}
-	// } })
   return children({
 		details,
 		extra,
@@ -56,6 +32,3 @@ export default compose(
 	graphql(getLists, getListsOptions),
 	graphql(setList, { name: 'setList' }),
 )(GlobalContext)
-	
-// export default GlobalContextProvider
-// export const GlobalContextConsumer = GlobalContext.Consumer

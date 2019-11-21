@@ -1,30 +1,32 @@
 import React, { useState } from 'react'
-import { Menu } from '../Details/Menu/Menu'
-import { useMutation, useQuery } from '../hooks/apolloHooks'
+import { useMutation } from '../hooks/apolloHooks'
 import { upsertTask as uT } from '../../graphql/task'
+
+import { Menu } from '../Details/Menu/Menu'
 import { toLocalDatetimeString } from '../../utils/dates'
 import { Div } from '../styled/styled-semantic'
 import Field from '../form/Field'
 import BatchDetails from '../Batch/Details'
 
-export default function CreateComOfferDetails ({
-  details: { op, execId },
+export default function CreateTaskDetails ({
+  details: { appointId },
   setDetails
 }) {
 	const [ from, setFrom ] = useState(toLocalDatetimeString(new Date()))
 	const [ text, setText ] = useState()
-	const [ upsertTask ] = useMutation(uT, { variables: { input: {
-		from,
-		text,
-		status: 'ACTIVE',
-		opId: op.id,
-		execId
-	}}})
+	const [ upsertTask ] = useMutation(uT, {
+		variables: { input: {
+			from: new Date(from).toISOString(),
+			text,
+			status: 'ACTIVE',
+			appointId
+		}}
+	})
   return <>
     <Menu
       setDetails={setDetails}
       title='Добавить задачу'
-      onSubmit={() => console.log('{ from, text, status: ACTIV, opId: op.id, execId } > ', { from, text, status: 'ACTIVE', opId: op.id, execId }) && upsertTask()}
+      onSubmit={() => console.log('{ from, text, status: ACTIV, appointId } > ', { from, text, status: 'ACTIVE', appointId }) && upsertTask()}
     />
     <Div
 			h='calc(100% - 47px)'
@@ -47,6 +49,7 @@ export default function CreateComOfferDetails ({
 				/>
 				<Field
 					label='Задача'
+					inputWidth='257px'
 					type='textarea'
 					value={text}
 					onChange={text => setText(text)}

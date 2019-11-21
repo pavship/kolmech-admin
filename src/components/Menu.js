@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useContext } from 'react'
 
 import { Link } from 'react-router-dom'
 
@@ -8,20 +8,22 @@ import { Header } from './styled/styled-semantic'
 
 import { Query } from 'react-apollo'
 import { meLocal } from '../graphql/user'
+import AuthContext from './auth/AuthContext'
 
 const Container = styled.div`
   height: 36px;
 	display: flex;
 	align-items: center;
 	border-bottom: 1px solid #7e7e81;
+  background: white;
 `
 
 export default ({
   children,
   title,
   titleLinkTo,
-	refreshToken
 }) => {
+  const { refreshToken } = useContext(AuthContext)
 	return (
     <Container>
       <Link

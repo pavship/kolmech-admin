@@ -16,7 +16,7 @@ const NotificationsHolder = styled.div`
 	flex-direction: column;
 	justify-content: flex-end;
 	pointer-events: none;
-  z-index: 1;
+  z-index: 100;
 `
 
 const PosedItem = posed.div({
@@ -34,11 +34,11 @@ const PosedItem = posed.div({
 	},
 })
 
-export default ({
+export default function Notifications ({
 	messages,
 	dismissNotification,
 	cancelAutoDismiss
-}) => {
+}) {
 	// this Portal is never unmounted
   return reactDom.createPortal(
 		<NotificationsHolder>

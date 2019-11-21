@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react'
 
 import styled from 'styled-components'
-import { Div } from '../../styled/styled-semantic';
+import { Div } from '../../styled/styled-semantic'
 
 const Input = styled.input`
   width: 40px;
@@ -9,10 +9,9 @@ const Input = styled.input`
 
 export default ({
   deal,
-  batch,
+  batch: { id: batchId, qty: iniQty },
   upsertDeal
 }) => {
-  const { id: batchId, isNew: isNewBatch, qty: iniQty } = batch
   const inputRef = useRef(null)
   const [ editMode, setEditMode ] = useState(false)
   useEffect(() => (editMode &&
@@ -22,19 +21,12 @@ export default ({
   return editMode
   ? <Input
       ref={inputRef}
-      placeholder='0'
+      placeholder='1'
       value={qty}
       onChange={({ target: { value }}) => setQty(value)}
       onBlur={async () => {
         if (qty !== iniQty)
-          await upsertDeal({ variables: { input: {
-            id: deal.id,
-            batches: [
-              ...deal.batches.map(({ id }) => ({ id })).filter(b => b.id !== batchId),
-              { id: batchId, qty }
-            ]
-          }}})
-        // else setEditMode(false)
+          await upsertDeal([ `batches[id=${batchId}].qty`, qty ])
         setEditMode(false)
       }}
     />
@@ -42,6 +34,6 @@ export default ({
       pl='4px'
       onClick={() => setEditMode(true)}
     >
-      {!isNewBatch ? qty : ''}
+      {qty} шт
     </Div>
 }

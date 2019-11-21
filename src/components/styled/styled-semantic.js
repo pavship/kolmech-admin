@@ -31,7 +31,7 @@ export const theme = {
 	}
 }
 const getThemeColor = (color) => theme.colors[color] || color
-const baseSet = ({ theme, bt, bb, bc, bl, br, bs, c, d, fs, fw, h, l, lh, mw, minw, m, mb, mt, ml, mr, o, ov, ox, oy, p, pb, pe, pos, pl, pr, pt, t, ta, to, va, w, whs, ws, z }) => {
+const baseSet = ({ theme, bt, bb, bc, bl, br, bs, bsh, c, cur, d, f, fl, fs, fw, h, l, lh, mw, minw, m, mb, mt, ml, mr, o, ov, ox, oy, p, pb, pe, pos, pl, pr, pt, t, tr, ta, to, v, va, w, whs, ws, z }) => {
 	return `
 		${bt 	? `border-top: ${bt};`														: ''}
 		${bb 	? `border-bottom: ${bb};`													: ''}
@@ -39,8 +39,12 @@ const baseSet = ({ theme, bt, bb, bc, bl, br, bs, c, d, fs, fw, h, l, lh, mw, mi
 		${bl 	? `border-left: ${bl};`														: ''}
 		${br 	? `border-right: ${br};`													: ''}
 		${bs 	? `box-sizing: ${bs};`														: ''}
+		${bsh ? `box-shadow: ${bsh};`														: ''}
 		${c 	? `color: ${theme.colors && theme.colors[c] || c};`	: ''}
+		${cur 	? `cursor: ${cur};`															: ''}
 		${d 	? `display: ${d};`																: ''}
+		${f 	? `flex: ${f};`																		: ''}
+		${fl 	? `float: ${fl};`																	: ''}
 		${fs 	? `font-size: ${fs};`															: ''}
 		${fw 	? `font-weight: ${fw};`														: ''}
 		${h 	? `height: ${h};`																	: ''}
@@ -65,8 +69,10 @@ const baseSet = ({ theme, bt, bb, bc, bl, br, bs, c, d, fs, fw, h, l, lh, mw, mi
 		${pr 	? `padding-right: ${pr};`													: ''}
 		${pt 	? `padding-top: ${pt};`														: ''}
 		${t 	? `top: ${t};`																		: ''}
+		${tr 	? `transition: ${tr};`														: ''}
 		${ta 	? `text-align: ${ta};`														: ''}
 		${to 	? `text-overflow: ${to};`													: ''}
+		${v 	? `visibility: ${v};`															: ''}
 		${va 	? `vertical-align: ${va};`												: ''}
 		${w 	? `width: ${(theme.widths && theme.widths[w]) || w};`		: ''}
 		${whs ? `white-space: ${whs};`													: ''}
@@ -127,15 +133,21 @@ const IconPropFilter = ({
 	active,
 	activeColor,
 	selectMode,
+	disabled,
+	onClick,
 	...rest
 }) => (
-	<SIcon {...rest} />
+	<SIcon
+		{...rest}
+		disabled={disabled}
+		onClick={disabled ? undefined : onClick}
+	/>
 )
 export const Icon = styled(IconPropFilter)`
 	&&&& {
 		${props => baseSet(props)}
 	}
-	&&& {
+	&&&&& {
 		${props => props.activeColor && `{
 			&:hover {
 				color: ${getThemeColor(props.activeColor)} !important;
@@ -145,6 +157,7 @@ export const Icon = styled(IconPropFilter)`
 			}
 			${props.active && `color: ${getThemeColor(props.activeColor)} !important;`}
 		}`}
+		${props => props.disabled && 'opacity: .45!important;'}
 	}
 `
 

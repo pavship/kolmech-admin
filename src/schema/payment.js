@@ -33,6 +33,11 @@ export const validationSchema = object().shape({
     //     ? schema.required('выберите оборудование')
     //     : schema.strip()
     //   ),
+  mpProjectId: number()
+    .integer()
+    .notRequired(),
+  // mpProjectId: idValidationType
+  //   .notRequired(),
   personId: idValidationType
     .notRequired(),
     // TODO I'm disappointed with yup. Schema definition rules are not semantic, need to change to something else!
@@ -54,5 +59,6 @@ export const formikSchema = date => ({
   personId: '',
   orgId: '',
   purpose: '',
+  mpProjectId: '',
   amount: ''
 })

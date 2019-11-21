@@ -1,46 +1,45 @@
-import React, { Component, useContext, useMemom, useCallback } from 'react'
+import React, { useContext, useMemo, useState, useCallback } from 'react'
 import produce from 'immer'
 import cuid from 'cuid'
+import Notifications from './Notifications'
 
 const NotificationsContext = React.createContext()
 export default NotificationsContext
 
-export class NotificationsProvider extends Component {
-  state = {
-    messages: []
-  }
-  create = message => {
+export function NotificationsProvider ({
+  children
+}) {
+  const [ messages, setMessages ] = useState([])
+  const create = message => {
     message.id = cuid()
     // notification will auto dismiss
     message.timerId = setTimeout(() => {
-      this.dismiss(message.id)
+      dismiss(message.id)
     }, 5000)
-    this.setState(produce(draft => {
-      draft.messages.push(message)
+    setMessages(produce(messages, draft => {
+      draft.push(message)
     }))
   }
-  dismiss = messageId => this.setState(produce(draft => {
-    draft.messages = draft.messages.filter(m => m.id !== messageId)
+  const dismiss = messageId => setMessages(produce(messages, draft => {
+    console.log('messageId > ', messageId)
+    return draft.splice[messages.findIndex(m => m.id === messageId), 1]
   }))
-  cancelAutoDismiss = messageId => this.setState(produce(draft => {
-    const message = draft.messages.find(m => m.id === messageId)
+  const cancelAutoDismiss = messageId => setMessages(produce(messages, draft => {
+    const message = draft[messages.findIndex(m => m.id === messageId)]
     clearTimeout(message.timerId)
     delete message.timerId
   }))
-  render() {
-    return (
-      <NotificationsContext.Provider
-        value={{
-          state: this.state,
-          notify: this.create,
-          dismiss: this.dismiss,
-          cancelAutoDismiss: this.cancelAutoDismiss
-        }}
-      >
-        {this.props.children}
-      </NotificationsContext.Provider>
-    )
-  }
+  const providerValue = useMemo(() => ({ notify: create }), [])
+  return <NotificationsContext.Provider
+    value={providerValue}
+  >
+    <Notifications
+      messages={messages}
+      dismissNotification={dismiss}
+      cancelAutoDismiss={cancelAutoDismiss}
+    />
+    {children}
+  </NotificationsContext.Provider>
 }
 
 export const NotificationsConsumer = ({ children }) => (

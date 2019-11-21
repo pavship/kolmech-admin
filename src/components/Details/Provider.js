@@ -1,21 +1,12 @@
-import React, { useState } from 'react'
+import React, { useState, useMemo } from 'react'
 
 import styled from 'styled-components'
 import posed, { PoseGroup } from 'react-pose'
-import { OrgDetails } from '../Org/Details/Details'
+import OrgDetails from '../Org/Details/Details'
 import CreateComOfferDetails from '../ComOffer/CreateComOfferDetails'
 import CreateTaskDetails from '../Task/CreateTaskDetails'
 import SelectExecDetails from '../Exec/SelectExecDetails'
-
-const Container = styled.div`
-  height: calc(100% - 36px);
-  overflow-y: scroll;
-`
-
-const MainContentContainer = styled.div`
-  position: relative;
-  height: 100%;
-`
+import TasksDetails from '../Task/TasksDetails';
 
 const Sidebar = styled(posed.div({
   enter: { 
@@ -32,9 +23,10 @@ const Sidebar = styled(posed.div({
   top: 36px;
   right: 0;
   width: ${props =>
-    props.type === 'CreateComOffer' ? '470px' :
-    props.type === 'createAmoTask' ? '470px' :
-    '600px'
+    ['CreateComOffer', 'createTask', 'tasks']
+      .includes(props.type)
+        ? '470px'
+        : '600px'
   };
   height: calc(100% - 36px);
 	background-color: rgba(255,255,255,1);
@@ -49,41 +41,42 @@ export const DetailsProvider = ({
 }) => {
   const [ details, setDetails ] = useState(null)
   const { type } = details || {}
+  const providerValue = useMemo(() => ({ setDetails }), [])
   return (
     <DetailsContext.Provider
-      value={{ details, setDetails }}
+      value={providerValue}
     >
-      <Container>
-        <MainContentContainer>
-          {children}
-        </MainContentContainer>
-        <PoseGroup>
-          {details &&
-            <Sidebar key='1'
-              type={type}
-            >
-							{ type === 'Org' ?	<OrgDetails
-                  details={details}
-                  setDetails={setDetails}
+      <PoseGroup>
+        {details &&
+          <Sidebar key='1'
+            type={type}
+          >
+            { type === 'Org' ?	<OrgDetails
+                details={details}
+                setDetails={setDetails}
+              /> :
+              type === 'CreateComOffer' ?	<CreateComOfferDetails
+                details={details}
+                setDetails={setDetails}
+              /> :
+              type === 'tasks' ?	<TasksDetails
+                details={details}
+                setDetails={setDetails}
                 /> :
-                type === 'CreateComOffer' ?	<CreateComOfferDetails
-                  details={details}
-                  setDetails={setDetails}
+              type === 'createTask' ?	<CreateTaskDetails
+                details={details}
+                setDetails={setDetails}
                 /> :
-                type === 'createTask' ?	<CreateTaskDetails
-                  details={details}
-                  setDetails={setDetails}
-                  /> :
-                type === 'SelectExec' ?	<SelectExecDetails
-                  details={details}
-                  setDetails={setDetails}
-                />
-								: null
-							}
-            </Sidebar>
-          }
-        </PoseGroup>
-      </Container>
+              type === 'SelectExec' ?	<SelectExecDetails
+                details={details}
+                setDetails={setDetails}
+              />
+              : null
+            }
+          </Sidebar>
+        }
+      </PoseGroup>
+      {children}
     </DetailsContext.Provider>
   )
 }

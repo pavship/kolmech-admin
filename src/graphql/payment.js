@@ -1,9 +1,10 @@
 import gql from 'graphql-tag'
 import { articleFragmentBasic, articleFragmentFull } from './article'
-import { personFragmentBasic } from './person'
 import { accountFragmentBasic, accountFragmentFull } from './account'
 import { equipmentFragmentBasic } from './equipment'
-import { orgFragmentBasic } from './org';
+import { mpProjectFragmentFull } from './mpProject'
+import { orgFragmentBasic } from './org'
+import { personFragmentBasic } from './person'
 
 export const paymentFragmentBasic = gql`
 	fragment PaymentFragmentBasic on Payment {
@@ -15,6 +16,7 @@ export const paymentFragmentBasic = gql`
 		account { ...AccountFragmentBasic }
 		article { ...ArticleFragmentBasic }
 		equipment { ...EquipmentFragmentBasic }
+		mpProjectId
 		org { ...OrgFragmentBasic }
 		person { ...PersonFragmentBasic }
 	}
@@ -36,14 +38,16 @@ export const paymentsPage = gql`
 	query PaymentsPage {
 		accounts { ...AccountFragmentFull }
 		articles { ...ArticleFragmentFull }
-		orgs { ...OrgFragmentBasic }
 		equipments { ...EquipmentFragmentBasic }
+		mpProjects { ...mpProjectFragmentFull }
+		orgs { ...OrgFragmentBasic }
 		payments { ...PaymentFragmentBasic }
 	}
 	${accountFragmentFull}
 	${articleFragmentFull}
-	${orgFragmentBasic}
 	${equipmentFragmentBasic}
+	${orgFragmentBasic}
+	${mpProjectFragmentFull}
 	${paymentFragmentBasic}
 `
 

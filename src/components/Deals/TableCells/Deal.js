@@ -1,31 +1,45 @@
-import React, { useState, useContext } from 'react'
-
+import React, { useContext } from 'react'
+import DiskContext from '../../context/DiskContext'
+import styled from 'styled-components'
 import { Dropdown } from 'semantic-ui-react'
 import { Div } from '../../styled/styled-semantic'
-
-import DiskContext from '../../context/DiskContext'
 import { DropdownMenu } from './DropdownMenu'
 
+const Container = styled.div`
+  display: flex;
+  position: relative;
+  :not(:last-child) {
+		border-bottom: 1px solid rgba(34,36,38,0.15);
+	}
+`
+
+const Title = styled(Div)`
+  ${Container}:hover & {
+    width: 150px;
+  }
+`
+
+const Menu = styled.div`
+  display: none;
+  margin-left: auto;
+  ${Container}:hover & {
+    display: unset;
+  }
+`
+
 export default ({
-  deal
+  deal: { id: dealId, amoId, name }
 }) => {
-  const { id: dealId, amoId } = deal
   const { highlightFolder } = useContext(DiskContext)
-  const [isHovered, setIsHovered] = useState(false)
-  return <Div
-    d='flex'
-    onMouseEnter={() => setIsHovered(true)}
-    onMouseLeave={() => setIsHovered(false)}
-  >
-    <Div
+  return <Container>
+    <Title
       ov='hidden'
       to='ellipsis'
-      w={isHovered ? '150px' : undefined}
-      fw={isHovered ? 'bold' : undefined}
+      fw='bold'
     >
-      {deal && deal.name}
-    </Div>
-    {isHovered &&
+      {name}
+    </Title>
+    <Menu>
       <DropdownMenu>
         <Dropdown.Header>
           <a
@@ -40,6 +54,6 @@ export default ({
           onClick={() => highlightFolder({ dealId })}
         />
       </DropdownMenu>
-    }
-  </Div>
+    </Menu>
+  </Container>
 }

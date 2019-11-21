@@ -23,7 +23,7 @@ const Container = styled.div`
 
 const TopSection = styled.div`
   flex: 1 0 content;
-  min-height: ${308 + 47.5*2}px;
+  min-height: ${328 + 47.5*2}px;
   display: flex;
   
 `
@@ -51,11 +51,12 @@ export default ({
           {({ loading: paymentsLoading,
               error,
               data: {
-                payments,
                 articles,
-                orgs,
                 accounts,
-                equipments: equipment
+                equipments: equipment,
+                mpProjects,
+                orgs,
+                payments,
               } = {},
               refetch: refetchPayments
             }) => <>
@@ -124,11 +125,12 @@ export default ({
                         path="/pay"
                         render={() => (<>
                           <PaymentForm
+                            articles={articles}
+                            equipment={equipment}
+                            mpProjects={mpProjects}
+                            orgs={orgs}
                             payment={activePayment}
                             reset={() => setActivePayment(null)}
-                            articles={articles}
-                            orgs={orgs}
-                            equipment={equipment}
                           />
                           <PaymentStats
                             payments={payments}
@@ -150,6 +152,7 @@ export default ({
                     <BottomSection>
                       <PaymentTable
                         payments={payments}
+                        mpProjects={mpProjects}
                         activePayment={activePayment}
                         onClickRow={id => setActivePayment(payments.find(p => p.id === id))}
                       />

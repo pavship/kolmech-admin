@@ -51,7 +51,6 @@ const Td = styled.td`
 	white-space: nowrap;
 	text-overflow: ellipsis;
 	${props => !!props.onClick && `cursor: pointer;`}
-	/* ${props => !props.truncated && `overflow: hidden;`} */
 	${props => props.service && `padding-left: 3px;`}
 	${Row}:not(:hover) & {
 		${props => props.hoverable
@@ -221,7 +220,6 @@ const TableRow = props => {
 								color={iconColor || undefined}
 							/>
 						}
-
 						{f.truncated
 							? <Untruncated>
 									{val}

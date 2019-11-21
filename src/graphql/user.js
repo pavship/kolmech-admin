@@ -6,8 +6,12 @@ export const me = gql`
 			id
 			email
 			person {
+				id
 				fName
 				lName
+				exec {
+					id
+				}
 			}
 		}
 	}
