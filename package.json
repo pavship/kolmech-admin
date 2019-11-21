@@ -1,7 +1,7 @@
 {
   "name": "kolmech-admin",
   "homepage": "https://pavship.github.io/kolmech-admin",
-  "version": "2.5.5",
+  "version": "2.5.7",
   "private": true,
   "dependencies": {
     "@apollo/react-hooks": "^3.0.0",
