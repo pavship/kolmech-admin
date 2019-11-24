@@ -4,8 +4,8 @@ self.__precacheManifest = [
     "url": "/kolmech-admin/static/media/icons.faff9214.woff"
   },
   {
-    "revision": "e06d74680931be6d0c0e",
-    "url": "/kolmech-admin/static/js/main.372e41a4.chunk.js"
+    "revision": "072e35ef0f3830c80a63",
+    "url": "/kolmech-admin/static/js/main.d43c9150.chunk.js"
   },
   {
     "revision": "a1a749e89f578a49306ec2b055c073da",
@@ -16,12 +16,12 @@ self.__precacheManifest = [
     "url": "/kolmech-admin/static/media/icons.962a1bf3.svg"
   },
   {
-    "revision": "cd6c777f1945164224dee082abaea03a",
-    "url": "/kolmech-admin/static/media/outline-icons.cd6c777f.woff2"
-  },
-  {
     "revision": "ef60a4f6c25ef7f39f2d25a748dbecfe",
     "url": "/kolmech-admin/static/media/outline-icons.ef60a4f6.woff"
+  },
+  {
+    "revision": "cd6c777f1945164224dee082abaea03a",
+    "url": "/kolmech-admin/static/media/outline-icons.cd6c777f.woff2"
   },
   {
     "revision": "ad97afd3337e8cda302d10ff5a4026b8",
@@ -80,7 +80,7 @@ self.__precacheManifest = [
     "url": "/kolmech-admin/static/css/2.a525bc76.chunk.css"
   },
   {
-    "revision": "6d11e55a535685af27c9d57c285169d3",
+    "revision": "35c67c1dddeaad0afe9a5a82e8ce4ca7",
     "url": "/kolmech-admin/index.html"
   }
 ];
