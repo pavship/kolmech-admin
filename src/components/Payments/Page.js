@@ -25,12 +25,13 @@ const TopSection = styled.div`
   flex: 1 0 content;
   min-height: ${328 + 47.5*2}px;
   display: flex;
-  
+  border-bottom: 1px solid gray;
 `
 
 const BottomSection = styled.div`
-  flex: 1 1 2000px;
-  margin-top: 1rem;
+  /* flex: 1 1 2000px;
+  margin-top: 1rem; */
+  overflow-y: scroll;
 `
 
 export default ({
