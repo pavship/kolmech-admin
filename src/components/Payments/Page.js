@@ -1,7 +1,8 @@
-import React, { useState } from 'react'
+import React, { useState, useContext } from 'react'
 
 import { Query, Mutation } from 'react-apollo'
 import { paymentsPage } from '../../graphql/payment'
+import UserContext from '../context/UserContext'
 
 import styled from 'styled-components'
 import PaymentChart from './Chart'
@@ -37,6 +38,7 @@ const BottomSection = styled.div`
 export default ({
   refreshToken
 }) => {
+  const { me: { role }} = useContext(UserContext)
   const [activePayment, setActivePayment] = useState(null)
   return (
     <NotificationsConsumer>
@@ -55,6 +57,7 @@ export default ({
                 articles,
                 accounts,
                 equipments: equipment,
+                mdKontragents,
                 mpProjects,
                 orgs,
                 payments,
@@ -82,38 +85,40 @@ export default ({
                     titleLinkTo='/pay'
                     refreshToken={refreshToken}
                   >
-                    <Button compact circular menu
-                      w='120px'
-                      ml='0'
-                      ta='left'
-                      activeColor='blue' 
-                      onClick={syncWithTochkaPayments}
-                    >
-                      <Icon
-                        name='refresh'
-                        color={loading ? 'blue' : undefined} 
-                        loading={loading}
-                      />
-                      {loading ? 'Загрузка..' : 'Точка Банк'}
-                    </Button>
-                    <Link to={
-                      !!matchPath(
-                        window.location.href.replace(/.*#/, ''),
-                        '/pay/chart'
-                      )
-                        ? '/pay'
-                        : '/pay/chart'
-                    }>
+                    {role === 'OWNER' &&<>
                       <Button compact circular menu
-                        activeColor='green'
-                        icon='chart bar outline'
-                        content='График'
-                        active={!!matchPath(
+                        w='120px'
+                        ml='0'
+                        ta='left'
+                        activeColor='blue' 
+                        onClick={syncWithTochkaPayments}
+                      >
+                        <Icon
+                          name='refresh'
+                          color={loading ? 'blue' : undefined} 
+                          loading={loading}
+                        />
+                        {loading ? 'Загрузка..' : 'Точка Банк'}
+                      </Button>
+                      <Link to={
+                        !!matchPath(
                           window.location.href.replace(/.*#/, ''),
                           '/pay/chart'
-                        )}
-                      />
-                    </Link>
+                        )
+                          ? '/pay'
+                          : '/pay/chart'
+                      }>
+                        <Button compact circular menu
+                          activeColor='green'
+                          icon='chart bar outline'
+                          content='График'
+                          active={!!matchPath(
+                            window.location.href.replace(/.*#/, ''),
+                            '/pay/chart'
+                          )}
+                        />
+                      </Link>
+                    </>}
                   </Menu>
                 }
               </Mutation>
@@ -128,16 +133,19 @@ export default ({
                           <PaymentForm
                             articles={articles}
                             equipment={equipment}
+                            mdKontragents={mdKontragents}
                             mpProjects={mpProjects}
                             orgs={orgs}
                             payment={activePayment}
                             reset={() => setActivePayment(null)}
                           />
-                          <PaymentStats
-                            payments={payments}
-                            accounts={accounts}
-                            orgs={orgs}
-                          />
+                          {role === 'OWNER' &&<>
+                            <PaymentStats
+                              payments={payments}
+                              accounts={accounts}
+                              orgs={orgs}
+                            />
+                          </>}
                         </>)}
                       />
                       <Route
@@ -153,6 +161,7 @@ export default ({
                     <BottomSection>
                       <PaymentTable
                         payments={payments}
+                        mdKontragents={mdKontragents}
                         mpProjects={mpProjects}
                         activePayment={activePayment}
                         onClickRow={id => setActivePayment(payments.find(p => p.id === id))}

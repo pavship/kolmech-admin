@@ -13,6 +13,7 @@ export const me = gql`
 					id
 				}
 			}
+			role
 		}
 	}
 `

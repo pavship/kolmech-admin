@@ -15,7 +15,7 @@ import styled from 'styled-components'
 import { Button, A, Div } from '../styled/styled-semantic'
 import { persons } from '../../graphql/person'
 import produce from 'immer'
-import { createOrg } from '../../graphql/org'
+import { createMdKontragent } from '../../graphql/mdKontragent'
 
 const Container = styled.div`
 	min-height: content;
@@ -63,6 +63,7 @@ const CounterpartyFieldSwitch = ({
 export default ({
 	articles,
 	equipment,
+	mdKontragents,
 	mpProjects,
 	orgs,
 	reset,
@@ -200,7 +201,7 @@ export default ({
 															{({orgCounterparty, setOrgCounterparty}) =>
 															orgCounterparty
 															? <Mutation
-																	mutation={createOrg}
+																	mutation={createMdKontragent}
 																	onCompleted={(res) => console.log('res > ', res) || notify({
 																		type: 'success',
 																		title: 'Организация добавлена'
@@ -210,30 +211,30 @@ export default ({
 																		title: 'Ошибка. Организация не добавлена',
 																		content: err.message,
 																	})}
-																	update={(cache, { data: { createOrg } }) => {
-																		const { orgs } = cache.readQuery({ query: paymentsPage })
+																	update={(cache, { data: { createMdKontragent } }) => {
+																		const { mdKontragents } = cache.readQuery({ query: paymentsPage })
 																		cache.writeQuery({
 																			query: paymentsPage,
 																			data: {
-																				orgs: produce(orgs, draft => {
-																					const foundIndex = orgs.findIndex(o => o.id === createOrg.id)
+																				mdKontragents: produce(mdKontragents, draft => {
+																					const foundIndex = mdKontragents.findIndex(o => o.Id === createMdKontragent.Id)
 																					foundIndex !== -1
-																						? draft.splice(foundIndex, 1, createOrg)
-																						: draft.unshift(createOrg)
+																						? draft.splice(foundIndex, 1, createMdKontragent)
+																						: draft.unshift(createMdKontragent)
 																				})
 																			}
 																		})
 																		
 																	}}
 																>
-																	{(createOrg, { loading: orgsLoading }) =>
+																	{(createMdKontragent, { loading: orgsLoading }) =>
 																		<Field
 																			label='Контрагент'
 																			required
-																			name='orgId'
-																			options={orgs
-																				? orgs.map(o => 
-																					({ key: o.id, text: o.name + ' (ИНН: ' + o.inn + ')', value: o.id })
+																			name='inn'
+																			options={mdKontragents
+																				? mdKontragents.map(k => 
+																					({ key: k.Inn, text: k.Name + ' (ИНН: ' + k.Inn + ')', value: k.Inn })
 																				)
 																				: []
 																			}
@@ -242,14 +243,16 @@ export default ({
 																			allowAdditions
 																			additionLabel='Добавить по ИНН: '
 																			onAddItem={async (e, { value: inn }) => {
-																				const created = await createOrg({ variables: { inn: inn.toString() } })
-																				setFieldValue('orgId', created && created.data && created.data.createOrg.id)
+																				const existing = mdKontragents.find(mdk => mdk.Inn === inn)
+																				if (existing) return setFieldValue('inn', existing.Inn)
+																				const created = await createMdKontragent({ variables: { inn: inn.toString() } })
+																				setFieldValue('inn', created && created.data && created.data.createMdKontragent.id)
 																			}}
 																			contentBeforeField={<div>
 																				Организация или <A
 																					onClick={() => {
 																						setOrgCounterparty(false)
-																						setFieldValue('orgId', '')
+																						setFieldValue('inn', '')
 																					}}
 																				>Персона</A>
 																			</div>}

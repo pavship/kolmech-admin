@@ -3,12 +3,14 @@ import { articleFragmentBasic, articleFragmentFull } from './article'
 import { accountFragmentBasic, accountFragmentFull } from './account'
 import { equipmentFragmentBasic } from './equipment'
 import { mpProjectFragmentFull } from './mpProject'
+import { mdKontragentFragmentBasic } from './mdKontragent'
 import { orgFragmentBasic } from './org'
 import { personFragmentBasic } from './person'
 
 export const paymentFragmentBasic = gql`
 	fragment PaymentFragmentBasic on Payment {
 		id
+		inn
 		isIncome
 		dateLocal
 		amount
@@ -39,6 +41,7 @@ export const paymentsPage = gql`
 		accounts { ...AccountFragmentFull }
 		articles { ...ArticleFragmentFull }
 		equipments { ...EquipmentFragmentBasic }
+		mdKontragents { ...mdKontragentFragmentBasic }
 		mpProjects { ...mpProjectFragmentFull }
 		orgs { ...OrgFragmentBasic }
 		payments { ...PaymentFragmentBasic }
@@ -47,6 +50,7 @@ export const paymentsPage = gql`
 	${articleFragmentFull}
 	${equipmentFragmentBasic}
 	${orgFragmentBasic}
+	${mdKontragentFragmentBasic}
 	${mpProjectFragmentFull}
 	${paymentFragmentBasic}
 `

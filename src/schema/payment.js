@@ -45,7 +45,11 @@ export const validationSchema = object().shape({
     //   ? schema.notRequired()
     //   : schema.required('выберите контрагента')
     // ),
-  orgId: idValidationType
+  // orgId: idValidationType
+  //   .notRequired(),
+  inn: string()
+    .min(10, 'ИНН может быть 10-ти или 12-ти значным')
+    .max(12, 'ИНН может быть 10-ти или 12-ти значным')
     .notRequired(),
   purpose: string()
     .max(250, 'превышено максимальное число символов (250)')
@@ -57,7 +61,7 @@ export const formikSchema = date => ({
   articleId: '',
   equipmentId: '',
   personId: '',
-  orgId: '',
+  inn: '',
   purpose: '',
   mpProjectId: '',
   amount: ''

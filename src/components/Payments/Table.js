@@ -8,7 +8,6 @@ import styled from 'styled-components'
 const Container = styled.div`
   margin-top: 1rem;
   max-height: 100%;
-  border: 1px solid rgba(34,36,38,.15);
   border-radius: 0.285714rem;
   .fz-tableHeaderRow {
     border-top: none !important;
@@ -59,6 +58,7 @@ const fields = [{
 
 export default ({
   activePayment,
+  mdKontragents,
   mpProjects,
   onClickRow,
   payments,
@@ -71,8 +71,9 @@ export default ({
       >
         {({ tableFields }) => 
           payments.map(payment => {
-            const { id, dateLocal, amount, person } = payment
+            const { id, dateLocal, amount, person, inn } = payment
             const isIncome = payment.article ? payment.article.isIncome : payment.isIncome
+            const kontragent = inn ? mdKontragents.find(k => k.Inn === inn) : null
             return (
               <TableRow
                 key={id}
@@ -97,7 +98,12 @@ export default ({
                   },
                   {
                     name: 'counterparty',
-                    path: person ? 'person.amoName' : 'org.name',
+                    value: person
+                      ? person.amoName
+                      : kontragent
+                        ? kontragent.Name
+                        : inn,
+                    color: (inn && !kontragent) ? '#9f3a38' : undefined
                   },
                   {
                     name: 'project',
