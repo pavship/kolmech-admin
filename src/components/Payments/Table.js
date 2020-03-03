@@ -36,32 +36,33 @@ const fields = [{
   name: 'article',
   path: 'article.rusName',
 	title: 'Статья',
-	width: '180px',
+	width: '200px',
   truncated: true
-},{
-  name: 'equipment',
-  path: 'equipment.name',
-  title: 'Оборудование',
-  width: '170px'
 },{
   name: 'purpose',
   path: 'purpose',
   title: 'Назначение',
-  width: '270px',
+  width: '300px',
   truncated: true
 },{
   name: 'amount',
   path: 'amount',
   title: 'Сумма',
   width: '140px'
+},{
+  name: 'account',
+  path: 'account',
+  title: 'Счет',
+  width: '200px'
 }]
 
 export default ({
+  accounts,
   activePayment,
   mdKontragents,
   mpProjects,
   onClickRow,
-  payments,
+  payments
 }) => {
   //  TODO add CollectionUtils to support sorting
   return (
@@ -74,6 +75,7 @@ export default ({
             const { id, dateLocal, amount, person, inn } = payment
             const isIncome = payment.article ? payment.article.isIncome : payment.isIncome
             const kontragent = inn ? mdKontragents.find(k => k.Inn === inn) : null
+            const account = accounts.find(a => a.id === payment.account.id)
             return (
               <TableRow
                 key={id}
@@ -113,6 +115,10 @@ export default ({
                     name: 'amount',
                     value: isIncome ? amount : -amount,
                     color: isIncome ? '#016936' : '#9f3a38'
+                  },
+                  {
+                    name: 'account',
+                    value: account.name,
                   }
                 ]}
                 // onClick={() => onClickRow(id)}

@@ -1,7 +1,6 @@
 import gql from 'graphql-tag'
 import { articleFragmentBasic, articleFragmentFull } from './article'
 import { accountFragmentBasic, accountFragmentFull } from './account'
-import { equipmentFragmentBasic } from './equipment'
 import { mpProjectFragmentFull } from './mpProject'
 import { mdKontragentFragmentBasic } from './mdKontragent'
 import { orgFragmentBasic } from './org'
@@ -15,16 +14,14 @@ export const paymentFragmentBasic = gql`
 		dateLocal
 		amount
 		purpose
-		account { ...AccountFragmentBasic }
+		account { ...accountFragmentBasic }
 		article { ...ArticleFragmentBasic }
-		equipment { ...EquipmentFragmentBasic }
 		mpProjectId
 		org { ...OrgFragmentBasic }
 		person { ...PersonFragmentBasic }
 	}
 	${accountFragmentBasic}
 	${articleFragmentBasic}
-	${equipmentFragmentBasic}
 	${orgFragmentBasic}
 	${personFragmentBasic}
 `
@@ -38,9 +35,8 @@ export const payments = gql`
 
 export const paymentsPage = gql`
 	query PaymentsPage {
-		accounts { ...AccountFragmentFull }
+		accounts { ...accountFragmentFull }
 		articles { ...ArticleFragmentFull }
-		equipments { ...EquipmentFragmentBasic }
 		mdKontragents { ...mdKontragentFragmentBasic }
 		mpProjects { ...mpProjectFragmentFull }
 		orgs { ...OrgFragmentBasic }
@@ -48,7 +44,6 @@ export const paymentsPage = gql`
 	}
 	${accountFragmentFull}
 	${articleFragmentFull}
-	${equipmentFragmentBasic}
 	${orgFragmentBasic}
 	${mdKontragentFragmentBasic}
 	${mpProjectFragmentFull}

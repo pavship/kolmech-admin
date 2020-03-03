@@ -1,14 +1,14 @@
 import gql from 'graphql-tag'
 
 export const accountFragmentBasic = gql`
-	fragment AccountFragmentBasic on Account {
+	fragment accountFragmentBasic on Account {
 		id
 	}
 `
 
 export const accountFragmentFull = gql`
-	fragment AccountFragmentFull on Account {
-		...AccountFragmentBasic
+	fragment accountFragmentFull on Account {
+		...accountFragmentBasic
 		name
 		number
 	}

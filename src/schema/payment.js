@@ -24,15 +24,6 @@ export const validationSchema = object().shape({
     // .transform(function(value, originalValue) {
     //   return isValidISODate(value) ? value : new Date('');
     // }),
-  equipmentId: idValidationType
-    .notRequired(),
-    // TODO proper conditional validation of equipmentId
-    // equipmentId: idValidationType
-    //   .when('articleId', (articleId, schema) => 
-    //     articles.find(a => a.id === articleId).relations.includes('EQUIPMENT')
-    //     ? schema.required('выберите оборудование')
-    //     : schema.strip()
-    //   ),
   mpProjectId: number()
     .integer()
     .notRequired(),
@@ -59,7 +50,6 @@ export const validationSchema = object().shape({
 export const formikSchema = date => ({
   dateLocal: toLocalISOString(date),
   articleId: '',
-  equipmentId: '',
   personId: '',
   inn: '',
   purpose: '',

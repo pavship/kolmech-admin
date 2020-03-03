@@ -56,7 +56,6 @@ export default ({
               data: {
                 articles,
                 accounts,
-                equipments: equipment,
                 mdKontragents,
                 mpProjects,
                 orgs,
@@ -132,7 +131,6 @@ export default ({
                         render={() => (<>
                           <PaymentForm
                             articles={articles}
-                            equipment={equipment}
                             mdKontragents={mdKontragents}
                             mpProjects={mpProjects}
                             orgs={orgs}
@@ -160,11 +158,12 @@ export default ({
                     </TopSection>
                     <BottomSection>
                       <PaymentTable
-                        payments={payments}
+                        accounts={accounts}
+                        activePayment={activePayment}
                         mdKontragents={mdKontragents}
                         mpProjects={mpProjects}
-                        activePayment={activePayment}
                         onClickRow={id => setActivePayment(payments.find(p => p.id === id))}
+                        payments={payments}
                       />
                     </BottomSection>
                   </>

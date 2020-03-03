@@ -62,7 +62,6 @@ const CounterpartyFieldSwitch = ({
 
 export default ({
 	articles,
-	equipment,
 	mdKontragents,
 	mpProjects,
 	orgs,
@@ -283,18 +282,6 @@ export default ({
 															}
 														</CounterpartyFieldSwitch>
 													)}
-													{values.articleId
-														&& articles.find(a => a.id === values.articleId).relations
-														&& articles.find(a => a.id === values.articleId).relations.includes('EQUIPMENT') &&
-															<Field
-																label='Оборудование'
-																required
-																name='equipmentId'
-																options={equipment.map(e => 
-																	({ key: e.id, text: e.name, value: e.id })
-																)}
-															/>
-													}
 													{!bankPayment && <>
 														<Field
 															label='Назначение'
