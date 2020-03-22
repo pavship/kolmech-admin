@@ -35,26 +35,28 @@ const TBody = styled.tbody`
 
 const Table = ({
 	children,
+	expand,
 	fields,
 	indent,
+	noServiceField,
 	noTopBorder,
 	select,
-	expand
 }) => {
 	const modes =  {
-		indent: !!indent,
-		select: !!select,
 		expand: !!expand,
+		indent: !!indent,
+		noServiceField: !!noServiceField,
+		select: !!select,
 	}
 	const fieldsExtended = [
 		...modes['indent'] ? [{
 			name: 'indent',
 			width: indent
 		}] : [],
-		{
+		...!modes['noServiceField'] ? [{
 			name: 'service',
 			width: '28px'
-		},
+		}] : [],
 		...modes['select'] ? [{
 			name: 'select',
 			width: '28px'

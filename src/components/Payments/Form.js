@@ -64,9 +64,8 @@ export default ({
 	articles,
 	mdKontragents,
 	mpProjects,
-	orgs,
-	reset,
 	payment,
+	reset,
 }) => {
 	let schema = formikSchema(new Date())
 	let initialValues = payment ? projectEntity(payment, schema) : schema
@@ -157,9 +156,18 @@ export default ({
 											enableReinitialize={true}
 											validationSchema={validationSchema}
 											onSubmit={async (values, { resetForm }) => {
-												const input = preparePayload(values, initialValues, schema)
-												if (!payment && !input.dateLocal) 
-													input.dateLocal = initialValues.dateLocal
+												console.log('values, initialValues, schema > ', values, initialValues, schema)
+												const input = preparePayload(
+													values,
+													(payment && payment.id)
+														? initialValues
+														: {
+															...schema,
+															dateLocal: ""
+														},
+													schema
+												)
+												// console.log('input > ', input)
 												await upsertPayment({ variables: { input } })
 												return payment ? reset() : resetForm()
 											}}

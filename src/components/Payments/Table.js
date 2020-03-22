@@ -15,6 +15,9 @@ const Container = styled.div`
 `
 
 const fields = [{
+  name: 'copy',
+	width: '35px'
+},{
   name: 'edit',
 	width: '35px'
 },{
@@ -61,7 +64,8 @@ export default ({
   activePayment,
   mdKontragents,
   mpProjects,
-  onClickRow,
+  onClickEdit,
+  onClickCopy,
   payments
 }) => {
   //  TODO add CollectionUtils to support sorting
@@ -69,6 +73,7 @@ export default ({
     <Container>
       <Table
         fields={fields}
+        noServiceField
       >
         {({ tableFields }) => 
           payments.map(payment => {
@@ -83,6 +88,16 @@ export default ({
                 tableFields={tableFields}
                 rowFields={[
                   {
+                    name: 'copy',
+                    icon: 'redo alternate',
+                    iconColor: 'grey',
+                    hoverable: true,
+                    hideUnhovered: true,
+                    hasEntries: false,
+                    value: ' ',
+                    onClick: () => onClickCopy(id),
+                  },
+                  {
                     name: 'edit',
                     icon: 'edit',
                     iconColor: 'grey',
@@ -90,7 +105,7 @@ export default ({
                     hideUnhovered: true,
                     hasEntries: false,
                     value: ' ',
-                    onClick: () => onClickRow(id),
+                    onClick: () => onClickEdit(id),
                     active: activePayment
                       && activePayment.id === id
                   },
@@ -121,7 +136,7 @@ export default ({
                     value: account.name,
                   }
                 ]}
-                // onClick={() => onClickRow(id)}
+                // onClick={() => onClickEdit(id)}
               />
             )
           }

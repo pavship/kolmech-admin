@@ -1,4 +1,5 @@
 import React, { useState, useContext } from 'react'
+import produce from 'immer'
 
 import { Query, Mutation } from 'react-apollo'
 import { paymentsPage } from '../../graphql/payment'
@@ -162,7 +163,11 @@ export default ({
                         activePayment={activePayment}
                         mdKontragents={mdKontragents}
                         mpProjects={mpProjects}
-                        onClickRow={id => setActivePayment(payments.find(p => p.id === id))}
+                        onClickEdit={id => setActivePayment(payments.find(p => p.id === id))}
+                        onClickCopy={id => setActivePayment(produce(payments.find(p => p.id === id), draft => {
+                          delete draft.id
+                          delete draft.dateLocal
+                        }))}
                         payments={payments}
                       />
                     </BottomSection>
