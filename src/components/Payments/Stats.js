@@ -38,15 +38,8 @@ export default ({
 	payments,
 	accounts,
 	orgs,
+	userRole,
 }) => {
-	// TODO make postgres aggregation query on server side instead of reduce here
-	const accountsStats = payments
-		.reduce((accounts, p) => {
-			const account = accounts.find(a => a.id === p.account.id)
-			const isIncome = p.article ? p.article.isIncome : p.isIncome
-			account.total += (isIncome ? 1 : -1) * p.amount
-			return accounts
-		}, accounts.map(a => ({ ...a, total: 0 })))
 	const persons = payments
 		.filter(p => !!p.person)
 		.map(p => p.person)
@@ -78,9 +71,9 @@ export default ({
 					color='green'
 				>
 					<Statistic.Value
-						content={currency(accountsStats
+						content={currency(accounts
 							.filter(a => !a.number) // only cache accounts
-							.reduce((sum, a) => sum + a.total, 0))}
+							.reduce((sum, a) => sum + a.balance, 0))}
 					/>
 					<Statistic.Label
 						content='Касса, в т.ч.'
@@ -89,93 +82,95 @@ export default ({
 						horizontal
 						size='small'
 					>
-						{accountsStats
+						{accounts
 							.filter(a => !a.number)
-							.map(({ id, name, total }) =>
+							.map(({ id, name, balance }) =>
 								<Statistic
 									key={id}
 									label={name}
-									value={currency(total)} 
+									value={currency(balance)} 
 								/>
 						)}
 					</Statistic.Group>
 				</SStatistic>
-				<SStatistic
-					color='blue'
-				>
-					<Statistic.Value
-						content={currency(accountsStats
-							.filter(a => !!a.number) // only bank accounts
-							.reduce((sum, a) => sum + a.total, 0))}
-					/>
-					<Statistic.Label
-						content='Счета, в т.ч.'
-					/>
-					<Statistic.Group
-						horizontal
-						size='small'
+				{userRole === 'OWNER' && <>
+					<SStatistic
+						color='blue'
 					>
-						{accountsStats
-							.filter(a => !!a.number)
-							.map(({ id, name, total }) =>
+						<Statistic.Value
+							content={currency(accounts
+								.filter(a => !!a.number) // only bank accounts
+								.reduce((sum, a) => sum + a.balance, 0))}
+						/>
+						<Statistic.Label
+							content='Счета, в т.ч.'
+						/>
+						<Statistic.Group
+							horizontal
+							size='small'
+						>
+							{accounts
+								.filter(a => !!a.number)
+								.map(({ id, name, balance }) =>
+									<Statistic
+										key={id}
+										label={name}
+										value={currency(balance)} 
+									/>
+							)}
+						</Statistic.Group>
+					</SStatistic>
+					<SStatistic
+						color='purple'
+					>
+						<Statistic.Value
+							content={currency(debtsAndLoans[0].reduce((sum, l) => sum + l.total, 0))}
+						/>
+						<Statistic.Label
+							content='Нам должны, в т.ч.'
+						/>
+						<Statistic.Group
+							horizontal
+							size='small'
+						>
+							{debtsAndLoans[0].map(({ id, amoName, name, total }) =>
 								<Statistic
 									key={id}
-									label={name}
+									label={!!amoName
+										? amoName.slice(0, amoName.lastIndexOf(' ') + 2) + '.'
+										: name.slice(0, 12) + '...'
+									}
 									value={currency(total)} 
 								/>
-						)}
-					</Statistic.Group>
-				</SStatistic>
-				<SStatistic
-					color='purple'
-				>
-					<Statistic.Value
-						content={currency(debtsAndLoans[0].reduce((sum, l) => sum + l.total, 0))}
-					/>
-					<Statistic.Label
-						content='Нам должны, в т.ч.'
-					/>
-					<Statistic.Group
-						horizontal
-						size='small'
+							)}
+						</Statistic.Group>
+					</SStatistic>
+					<SStatistic
+						color='red'
 					>
-						{debtsAndLoans[0].map(({ id, amoName, name, total }) =>
-							<Statistic
-								key={id}
-								label={!!amoName
-									? amoName.slice(0, amoName.lastIndexOf(' ') + 2) + '.'
-									: name.slice(0, 12) + '...'
-								}
-								value={currency(total)} 
-							/>
-						)}
-					</Statistic.Group>
-				</SStatistic>
-				<SStatistic
-					color='red'
-				>
-					<Statistic.Value
-						content={currency(-debtsAndLoans[1].reduce((sum, d) => sum + d.total, 0))}
-					/>
-					<Statistic.Label
-						content='Мы должны, в т.ч.'
-					/>
-					<Statistic.Group
-						horizontal
-						size='small'
-					>
-						{debtsAndLoans[1].map(({ id, amoName, name, total }) =>
-							<Statistic
-								key={id}
-								label={!!amoName
-									? amoName.slice(0, amoName.lastIndexOf(' ') + 2) + '.'
-									: name.slice(0, 12) + '...'
-								}
-								value={currency(total)}
-							/>
-						)}
-					</Statistic.Group>
-				</SStatistic>
+						<Statistic.Value
+							content={currency(-debtsAndLoans[1].reduce((sum, d) => sum + d.total, 0))}
+						/>
+						<Statistic.Label
+							content='Мы должны, в т.ч.'
+						/>
+						<Statistic.Group
+							horizontal
+							size='small'
+						>
+							{debtsAndLoans[1].map(({ id, amoName, name, total }) =>
+								<Statistic
+									key={id}
+									label={!!amoName
+										? amoName.slice(0, amoName.lastIndexOf(' ') + 2) + '.'
+										: name.slice(0, 12) + '...'
+									}
+									value={currency(total)}
+								/>
+							)}
+						</Statistic.Group>
+					</SStatistic>
+				</>}
 			</Statistic.Group>
 		</Container>
 	)

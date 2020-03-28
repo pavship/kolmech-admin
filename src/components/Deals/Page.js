@@ -12,8 +12,8 @@ import Timeline from './Timeline/Timeline'
 import TimelinePlot from './Timeline/Plot/Plot'
 
 import styled from 'styled-components'
-import { Div } from '../styled/styled-semantic';
-import { useQuery } from '../hooks/apolloHooks';
+import { Div } from '../styled/styled-semantic'
+import { useQuery } from '../hooks/apolloHooks'
 
 const Container = styled.div`
   position: relative;

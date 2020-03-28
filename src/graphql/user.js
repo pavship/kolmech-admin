@@ -1,4 +1,15 @@
 import gql from 'graphql-tag'
+import { accountFragmentFull } from './account'
+
+export const userFragmentBasic = gql`
+	fragment userFragmentBasic on User {
+		id
+		person {
+			id
+			amoName
+		}
+	}
+`
 
 export const me = gql`
 	query Me {
@@ -9,13 +20,17 @@ export const me = gql`
 				id
 				fName
 				lName
+				amoName
 				exec {
 					id
 				}
 			}
 			role
+			account { ...accountFragmentFull }
+			accounts { ...accountFragmentFull }
 		}
 	}
+	${accountFragmentFull}
 `
 
 export const meLocal = gql`
@@ -24,6 +39,7 @@ export const meLocal = gql`
 			person {
 				fName
 				lName
+				amoName
 			}
 		}
 	}

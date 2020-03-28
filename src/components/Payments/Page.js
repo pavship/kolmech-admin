@@ -2,6 +2,8 @@ import React, { useState, useContext } from 'react'
 import produce from 'immer'
 
 import { Query, Mutation } from 'react-apollo'
+import { useQuery } from '../hooks/apolloHooks'
+import { accounts as accountsQuery } from '../../graphql/account'
 import { paymentsPage } from '../../graphql/payment'
 import UserContext from '../context/UserContext'
 
@@ -25,7 +27,7 @@ const Container = styled.div`
 
 const TopSection = styled.div`
   flex: 1 0 content;
-  min-height: ${328 + 47.5*2}px;
+  min-height: ${368 + 47.5*2}px;
   display: flex;
   border-bottom: 1px solid gray;
 `
@@ -37,9 +39,9 @@ const BottomSection = styled.div`
 `
 
 export default ({
-  refreshToken
 }) => {
-  const { me: { role }} = useContext(UserContext)
+  const { me: { role, account: defaultAccount, accounts: accountsAvailable }} = useContext(UserContext)
+  const { loading: accountsLoading, error: accountsError, data: { accounts }, refetch: refetchAccounts, client } = useQuery(accountsQuery)
   const [activePayment, setActivePayment] = useState(null)
   return (
     <NotificationsConsumer>
@@ -56,7 +58,7 @@ export default ({
               error,
               data: {
                 articles,
-                accounts,
+                // accounts,
                 mdKontragents,
                 mpProjects,
                 orgs,
@@ -83,7 +85,6 @@ export default ({
                   <Menu
                     title='Платежи'
                     titleLinkTo='/pay'
-                    refreshToken={refreshToken}
                   >
                     {role === 'OWNER' &&<>
                       <Button compact circular menu
@@ -123,28 +124,41 @@ export default ({
                 }
               </Mutation>
               <Container>
-                { paymentsLoading ? 'Загрузка...' :
-                  error ? `Ошибка ${error.message}` : <>
+                { paymentsLoading || accountsLoading ? 'Загрузка...' :
+                  error || accountsError ? `Ошибка ${error.message}` : <>
                     <TopSection>
                       <Route
                         exact
                         path="/pay"
                         render={() => (<>
                           <PaymentForm
+                            accounts={role === 'OWNER' 
+                              ? accounts
+                              : [
+                                defaultAccount,
+                                ...accountsAvailable
+                              ]
+                            }
+                            accountsQuery={accountsQuery}
                             articles={articles}
+                            client={client}
+                            defaultAccountId={defaultAccount.id}
                             mdKontragents={mdKontragents}
                             mpProjects={mpProjects}
                             orgs={orgs}
                             payment={activePayment}
+                            refetchAccounts={refetchAccounts}
                             reset={() => setActivePayment(null)}
                           />
-                          {role === 'OWNER' &&<>
-                            <PaymentStats
-                              payments={payments}
-                              accounts={accounts}
-                              orgs={orgs}
-                            />
-                          </>}
+                          <PaymentStats
+                            accounts={role === 'OWNER' 
+                              ? accounts
+                              : [ defaultAccount ]
+                            }
+                            orgs={orgs}
+                            payments={payments}
+                            userRole={role}
+                          />
                         </>)}
                       />
                       <Route

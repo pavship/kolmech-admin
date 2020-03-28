@@ -42,8 +42,10 @@ export default ({
       <Query query={meLocal}>
         { ({ data }) => {
           if (data && data.me) {
-            const { fName, lName } = data.me.person
-            const menuNameTitle = fName + ' ' + (lName ? `${lName.slice(0,1)}.` : '')
+            const { fName, lName, amoName } = data.me.person
+            // const amoNameParts = amoName.split(' ')
+            // const menuNameTitle = amoNameParts[1] + ' ' + `${amoNameParts[0].slice(0,1)}.`
+            const menuNameTitle = amoName ? amoName.split(' ')[0] : lName || fName
             return (
               <Header inline
                 ml='auto'

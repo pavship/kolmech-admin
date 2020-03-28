@@ -16,7 +16,7 @@ export default function Root () {
 	if (!loading && !error && !data) refreshToken(null)
 	const me = data && data.me
 	return <>
-		{!error && loading ? 'Загрузка..' :
+		{!error && loading || !me ? 'Загрузка..' :
 			<UserContext.Provider
 				value={{ me }}
 			>

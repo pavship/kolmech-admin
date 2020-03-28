@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react'
+import produce from 'immer'
 
 import { Mutation, Query } from 'react-apollo'
 import { upsertPayment, paymentsPage } from '../../graphql/payment'
@@ -14,7 +15,6 @@ import { NotificationsConsumer } from '../notifications/NotificationsContext'
 import styled from 'styled-components'
 import { Button, A, Div } from '../styled/styled-semantic'
 import { persons } from '../../graphql/person'
-import produce from 'immer'
 import { createMdKontragent } from '../../graphql/mdKontragent'
 
 const Container = styled.div`
@@ -61,15 +61,25 @@ const CounterpartyFieldSwitch = ({
 }
 
 export default ({
+	accounts,
+	accountsQuery,
+	client,
 	articles,
+	defaultAccountId,
 	mdKontragents,
 	mpProjects,
 	payment,
+	refetchAccounts,
 	reset,
 }) => {
-	let schema = formikSchema(new Date())
+	let schema = formikSchema(new Date(), defaultAccountId)
 	let initialValues = payment ? projectEntity(payment, schema) : schema
 	const formLabelWidth = '110px'
+	const accountOptions = accounts
+		.filter(a => !a.number)
+		.map(a => 
+			({ key: a.id, text: a.name, value: a.id })
+		)
 	const articleOptions = articles.map(a => 
 		({ key: a.id, text: a.rusName, value: a.id })
 	)
@@ -135,7 +145,7 @@ export default ({
 										title: 'Ошибка сохранения',
 										content: err.message,
 									})}
-									update={(cache, { data: { upsertPayment } }) => {
+									update={ async (cache, { data: { upsertPayment } }) => {
 										const { payments } = cache.readQuery({ query: paymentsPage })
 										cache.writeQuery({
 											query: paymentsPage,
@@ -148,6 +158,8 @@ export default ({
 												})
 											}
 										})
+										const accounts = await client.query({query: accountsQuery, fetchPolicy: 'network-only'})
+										console.log('accountsFetched > ', accounts)
 									}}
 								>
 									{(upsertPayment, { loading }) =>
@@ -156,19 +168,22 @@ export default ({
 											enableReinitialize={true}
 											validationSchema={validationSchema}
 											onSubmit={async (values, { resetForm }) => {
-												console.log('values, initialValues, schema > ', values, initialValues, schema)
+												// console.log('values, initialValues, schema > ', values, initialValues, schema)
 												const input = preparePayload(
 													values,
 													(payment && payment.id)
 														? initialValues
 														: {
 															...schema,
-															dateLocal: ""
+															dateLocal: "",
+															accountId: ""
 														},
 													schema
 												)
 												// console.log('input > ', input)
 												await upsertPayment({ variables: { input } })
+												// const accounts = await client.query({query: accountsQuery, fetchPolicy: 'network-only'})
+												// console.log('accountsFetched > ', accounts)
 												return payment ? reset() : resetForm()
 											}}
 										>
@@ -181,14 +196,20 @@ export default ({
 												<Fields
 													labelWidth={formLabelWidth}
 												>
-													{!bankPayment &&
+													{!bankPayment && <>
 														<Field
 															label='Дата'
 															required
 															name='dateLocal'
 															type='date'
 														/>
-													}
+														<Field
+															label='Счет'
+															required
+															name='accountId'
+															options={accountOptions}
+														/>
+													</>}
 													<Field
 														label='Статья'
 														required

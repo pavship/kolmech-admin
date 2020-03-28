@@ -5,6 +5,7 @@ import { mpProjectFragmentFull } from './mpProject'
 import { mdKontragentFragmentBasic } from './mdKontragent'
 import { orgFragmentBasic } from './org'
 import { personFragmentBasic } from './person'
+import { userFragmentBasic } from './user'
 
 export const paymentFragmentBasic = gql`
 	fragment PaymentFragmentBasic on Payment {
@@ -16,14 +17,17 @@ export const paymentFragmentBasic = gql`
 		purpose
 		account { ...accountFragmentBasic }
 		article { ...ArticleFragmentBasic }
+		createdBy { ...userFragmentBasic }
 		mpProjectId
 		org { ...OrgFragmentBasic }
 		person { ...PersonFragmentBasic }
+		updatedBy { ...userFragmentBasic }
 	}
 	${accountFragmentBasic}
 	${articleFragmentBasic}
 	${orgFragmentBasic}
 	${personFragmentBasic}
+	${userFragmentBasic}
 `
 
 export const payments = gql`
@@ -33,16 +37,16 @@ export const payments = gql`
 	${paymentFragmentBasic}
 `
 
+// accounts { ...accountFragmentFull }
+// ${accountFragmentFull}
 export const paymentsPage = gql`
 	query PaymentsPage {
-		accounts { ...accountFragmentFull }
 		articles { ...ArticleFragmentFull }
 		mdKontragents { ...mdKontragentFragmentBasic }
 		mpProjects { ...mpProjectFragmentFull }
 		orgs { ...OrgFragmentBasic }
 		payments { ...PaymentFragmentBasic }
 	}
-	${accountFragmentFull}
 	${articleFragmentFull}
 	${orgFragmentBasic}
 	${mdKontragentFragmentBasic}

@@ -56,10 +56,18 @@ const fields = [{
   name: 'account',
   path: 'account',
   title: 'Счет',
-  width: '200px'
+  width: '100px'
+},{
+  name: 'createdBy',
+  title: 'Автор',
+  width: '100px'
+},{
+  name: 'updatedBy',
+  title: 'Редактор',
+  width: '100px'
 }]
 
-export default ({
+export default function PaymentTable ({
   accounts,
   activePayment,
   mdKontragents,
@@ -67,7 +75,7 @@ export default ({
   onClickEdit,
   onClickCopy,
   payments
-}) => {
+}) {
   //  TODO add CollectionUtils to support sorting
   return (
     <Container>
@@ -77,7 +85,7 @@ export default ({
       >
         {({ tableFields }) => 
           payments.map(payment => {
-            const { id, dateLocal, amount, person, inn } = payment
+            const { id, dateLocal, amount, person, inn, createdBy, updatedBy } = payment
             const isIncome = payment.article ? payment.article.isIncome : payment.isIncome
             const kontragent = inn ? mdKontragents.find(k => k.Inn === inn) : null
             const account = accounts.find(a => a.id === payment.account.id)
@@ -134,6 +142,14 @@ export default ({
                   {
                     name: 'account',
                     value: account.name,
+                  },
+                  {
+                    name: 'createdBy',
+                    value: createdBy && createdBy.person.amoName.split(' ')[0] || 'авто',
+                  },
+                  {
+                    name: 'updatedBy',
+                    value: updatedBy && updatedBy.person.amoName.split(' ')[0],
                   }
                 ]}
                 // onClick={() => onClickEdit(id)}
