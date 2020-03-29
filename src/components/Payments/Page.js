@@ -153,7 +153,10 @@ export default ({
                           <PaymentStats
                             accounts={role === 'OWNER' 
                               ? accounts
-                              : [ defaultAccount ]
+                              : [
+                                defaultAccount,
+                                ...accountsAvailable
+                              ]
                             }
                             orgs={orgs}
                             payments={payments}
