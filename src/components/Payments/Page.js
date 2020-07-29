@@ -158,7 +158,7 @@ export default ({
                                 ...accountsAvailable
                               ]
                             }
-                            orgs={orgs}
+                            mdKontragents={mdKontragents}
                             payments={payments}
                             userRole={role}
                           />

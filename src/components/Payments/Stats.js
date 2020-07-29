@@ -37,7 +37,7 @@ const SStatistic = styled(Statistic)`
 export default ({
 	payments,
 	accounts,
-	orgs,
+	mdKontragents,
 	userRole,
 }) => {
 	const persons = payments
@@ -52,12 +52,12 @@ export default ({
 		.filter(p => !!p.article)
 		.filter(p => p.article.isLoan)
 		.reduce((debts, p) => {
-			const counterparty = debts.find(d => d.id === (p.person && p.person.id) || d.id === (p.org && p.org.id))
+			const counterparty = debts.find(d => d.id === (p.person && p.person.id) || d.Inn === p.inn)
 			counterparty.total += (p.article.isIncome ? 1 : -1) * p.amount
 			return debts
 		}, [
 			...persons.map(a => ({ ...a, total: 0 })),
-			...orgs.map(a => ({ ...a, total: 0 }))
+			...mdKontragents.map(a => ({ ...a, total: 0 }))
 		])
 		.reduce((split, d) => {
 			if (d.total > 0) split[1].push(d)
@@ -133,12 +133,12 @@ export default ({
 							horizontal
 							size='small'
 						>
-							{debtsAndLoans[0].map(({ id, amoName, name, total }) =>
+							{debtsAndLoans[0].map(({ id, Id, amoName, name, total, Name }, i) =>
 								<Statistic
-									key={id}
+									key={id || Id}
 									label={!!amoName
-										? amoName.slice(0, amoName.lastIndexOf(' ') + 2) + '.'
-										: name.slice(0, 12) + '...'
+										? amoName.slice(0, amoName.lastIndexOf(' ') + 2) + '.' :
+										Name ? Name : name.slice(0, 12) + '...'
 									}
 									value={currency(total)} 
 								/>
@@ -158,12 +158,12 @@ export default ({
 							horizontal
 							size='small'
 						>
-							{debtsAndLoans[1].map(({ id, amoName, name, total }) =>
+							{debtsAndLoans[1].map(({ id, Id, amoName, name, total, Name }, i) =>
 								<Statistic
-									key={id}
+									key={id || Id}
 									label={!!amoName
-										? amoName.slice(0, amoName.lastIndexOf(' ') + 2) + '.'
-										: name.slice(0, 12) + '...'
+										? amoName.slice(0, amoName.lastIndexOf(' ') + 2) + '.' :
+										Name ? Name : name.slice(0, 12) + '...'
 									}
 									value={currency(total)}
 								/>
