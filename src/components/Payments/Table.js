@@ -89,6 +89,7 @@ export default function PaymentTable ({
             const isIncome = payment.article ? payment.article.isIncome : payment.isIncome
             const kontragent = inn ? mdKontragents.find(k => k.Inn === inn) : null
             const account = accounts.find(a => a.id === payment.account.id)
+            if (account.name === 'Точка ИП') console.log('payment, kontragent > ', account.name, payment, kontragent)
             return (
               <TableRow
                 key={id}
@@ -123,7 +124,7 @@ export default function PaymentTable ({
                   },
                   {
                     name: 'counterparty',
-                    value: person
+                    value: person && person.amoId !== 77498447
                       ? person.amoName
                       : kontragent
                         ? kontragent.Name
