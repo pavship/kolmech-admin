@@ -14,7 +14,7 @@
 importScripts("https://storage.googleapis.com/workbox-cdn/releases/3.6.3/workbox-sw.js");
 
 importScripts(
-  "/kolmech-admin/precache-manifest.8d21586cd119833e5921ca1220eb063c.js"
+  "/kolmech-admin/precache-manifest.15d3db87cbc067ac0d9923008f313162.js"
 );
 
 workbox.clientsClaim();
